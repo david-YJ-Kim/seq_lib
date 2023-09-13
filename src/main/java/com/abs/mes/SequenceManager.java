@@ -9,7 +9,7 @@ public final class SequenceManager {
         );
     }
 
-    public static String getTargetName(String targetSystem, String eqpId, String carrId, String lotId, String cid, String payload){
+    public static String getTargetName(String targetSystem, String cid, String payload, String ownerSystem){
         return getTargetName(targetSystem);
     }
 
