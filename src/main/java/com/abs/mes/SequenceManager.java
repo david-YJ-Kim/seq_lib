@@ -46,7 +46,7 @@ public final class SequenceManager {
 
 
 
-    public String getTargetName(String targetSystem, String eventName, String payload){
+    public String getTargetName(String targetSystem, String eventName, String payload, String ownerSystem){
         return site + "/" + env + "/" + targetSystem + "/CMN/00";
     }
 
