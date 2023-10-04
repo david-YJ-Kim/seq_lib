@@ -5,8 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="SEQ Library 초기화 설정">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_13_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_13_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_13_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20230227.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/SequenceManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/checker/EventRuleChecker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/code/DataStructureSample.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/code/PayloadCommonCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/code/SeqCommonCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/dto/SequenceRuleDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/executor/SequenceRuleExecutor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/abs/common/seq/util/SequenceManageUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/EventNameRule.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/ParsingItemRule.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/EventNameRule.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/ParsingItemRule.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/seq-library.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/seq-library.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/mes/SequenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/mes/SequenceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/mes/SequenceManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/mes/util/SequenceManageUtil.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +38,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -42,9 +64,10 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Workspace/abs/cmn/seq-library",
+    "last_opened_file_path": "C:/Workspace/abs/mos/mes-pos",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -57,12 +80,17 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Workspace\abs\cmn\seq-library\src\main\resources" />
+    </key>
+  </component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.SequenceRuleExecutor">
     <configuration name="SequenceManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.abs.mes.SequenceManager" />
       <module name="SEQLibrary" />
@@ -76,8 +104,36 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SequenceRuleExecutor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.abs.common.seq.executor.SequenceRuleExecutor" />
+      <module name="seq-library" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.abs.common.seq.executor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="com.abs.common.seq.SequenceManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.abs.common.seq.SequenceManager" />
+      <module name="seq-library" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.abs.common.seq.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SequenceRuleExecutor" />
+        <item itemvalue="Application.com.abs.common.seq.SequenceManager" />
         <item itemvalue="Application.SequenceManager" />
       </list>
     </recent_temporary>
@@ -132,7 +188,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="david-local" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -142,5 +210,15 @@
     <MESSAGE value="Initialize Project" />
     <MESSAGE value="SEQ Library 초기화 설정" />
     <option name="LAST_COMMIT_MESSAGE" value="SEQ Library 초기화 설정" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

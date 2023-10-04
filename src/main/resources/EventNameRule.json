@@ -1,0 +1,43 @@
+{
+  "$SystemName": [
+    {
+      "eventName": "$eventName",
+      "parsingItem": "$item",
+      "position": null,
+      "type": "$type",
+      "target": "$SystemName"
+    }
+  ],
+  "BRS": [
+    {
+      "eventName": "BRS_TRACK_IN_CNFM_REQ",
+      "parsingItem": "eqpId",
+      "position": null,
+      "type": "EQP",
+      "target": "BRS"
+    },
+    {
+      "eventName": "BRS_TRACK_IN_REQ",
+      "parsingItem": "eqpId",
+      "position": null,
+      "type": "EQP",
+      "target": "BRS"
+    }
+  ],
+  "WFS": [
+    {
+      "eventName": "WFS_CARR_ID_READ",
+      "parsingItem": "eqpId",
+      "position": null,
+      "type": "EQP",
+      "target": "WFS"
+    },
+    {
+      "eventName": "WFS_SLOTMAP_REPORT",
+      "parsingItem": "eqpId",
+      "position": null,
+      "type": "EQP",
+      "target": "WFS"
+    }
+  ]
+}
