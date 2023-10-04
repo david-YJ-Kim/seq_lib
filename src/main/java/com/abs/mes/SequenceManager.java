@@ -24,15 +24,33 @@ public final class SequenceManager {
     private String site;
     private String env;
     private List<Map> queryResult;
-    private String filPath;
+    private String filePath;
+    private String fileName;
+
+    public SequenceManager(String sourceSystem, String site, String env, String filePath, String fileName){
+        this(sourceSystem, site, env, filePath, fileName, null);
+    }
 
 
     public SequenceManager(String sourceSystem, String site, String env, List<Map> queryResult){
+
+        this(sourceSystem, site, env, null, null, queryResult);
 
         this.sourceSystem = sourceSystem;
         this.site = site;
         this.env = env;
         this.queryResult = queryResult;
+    }
+
+    public SequenceManager(String sourceSystem, String site, String env, String filePath, String fileName, List<Map> queryResult){
+
+        this.sourceSystem = sourceSystem;
+        this.site = site;
+        this.env = env;
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.queryResult = queryResult;
+
     }
 
 
@@ -46,7 +64,7 @@ public final class SequenceManager {
 
 
 
-    public String getTargetName(String targetSystem, String eventName, String payload, String ownerSystem){
+    public String getTargetName(String targetSystem, String eventName, String payload){
         return site + "/" + env + "/" + targetSystem + "/CMN/00";
     }
 
