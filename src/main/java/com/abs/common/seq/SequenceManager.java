@@ -1,11 +1,17 @@
 package com.abs.common.seq;
 
 import com.abs.common.seq.checker.EventRuleChecker;
+import com.abs.common.seq.checker.ParsingRuleChecker;
+import com.abs.common.seq.code.SystemNameList;
 import com.abs.common.seq.dto.SequenceRuleDto;
 import com.abs.common.seq.executor.SequenceRuleExecutor;
 import com.abs.common.seq.util.SequenceManageUtil;
+import org.json.JSONObject;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 //import com.abs.mes.util.JsonUtil;
@@ -21,7 +27,7 @@ public final class SequenceManager {
 
         String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String eventRuleFileName = "EventNameRule.json";
-        String parsingRuleFileName = "EventNameRule.json";
+        String parsingRuleFileName = "ParsingItemRule.json";
 
         SequenceManager sequenceManager = new SequenceManager(
                 sourceSystem,
@@ -38,14 +44,14 @@ public final class SequenceManager {
     private String sourceSystem;
     private String site;
     private String env;
-    private String topicHeader;
+    private String topicHeader; // SVM/DEV/
     private String ruleFilesPath;
 
     private String eventRuleFileName;
     private String parsingRuleFileName;
 
 
-//    private final AnotherChecker;
+    private final ParsingRuleChecker parsingRuleChecker;
     private final EventRuleChecker eventRuleChecker;
 
     private final SequenceRuleExecutor ruleExecutor;
@@ -78,6 +84,8 @@ public final class SequenceManager {
         this.eventRuleChecker = new EventRuleChecker(ruleFilesPath, eventRuleFileName,
                 SequenceManageUtil.readFile(ruleFilesPath.concat(eventRuleFileName)));
         this.ruleExecutor = new SequenceRuleExecutor();
+        this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilesPath, parsingRuleFileName,
+                SequenceManageUtil.readFile(ruleFilesPath.concat(parsingRuleFileName)));
 
 
     }
@@ -99,29 +107,75 @@ public final class SequenceManager {
 
     public String getTargetName(String targetSystem, String eventName, String payload){
     	String topicName;
-        SequenceRuleDto sequenceRuleDto;
+        String topicVal;
+
+        switch (targetSystem){
+            case SystemNameList.MCS:
+            case SystemNameList.FDC:
+            case SystemNameList.SPC:
+            case SystemNameList.EAP:
+            case SystemNameList.RMS:
+            case SystemNameList.RTD:
+            case SystemNameList.MSS:
+            case SystemNameList.CRS:
+                topicVal = targetSystem + this.getCommonTopic("00");
+                break;
+
+            case SystemNameList.WFS:
+            case SystemNameList.BRS:
+                topicVal = targetSystem + "/" + this.getTopicNameForMOS(targetSystem, eventName, payload);
+                break;
+            default:
+                topicVal =  "";
+                break;
+
+        }
+
+        topicName = topicHeader.concat(topicVal);
+        return topicName;
+
+    }
+
+
+    private String getTopicNameForMOS(String targetSystem, String eventName, String payload){
+        String ruleResult = null;
 
         // 1. EventRuleChecker
-        sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
+        SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
         if(sequenceRuleDto != null){
 
-            String ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, payload, sequenceRuleDto);
-            return topicHeader.concat(ruleResult);
+            ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName,
+                    new JSONObject(payload), sequenceRuleDto);
+
+        }else{
+            // 2. if Event Rule Checker return null
+            // 3. ParsingRule Checker.
+            ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
+            if(!ruleDtoArrayList.isEmpty()){
+                ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
+                        ruleDtoArrayList);
+            }
         }
-        // 2. if Event Rule Checker return null
-        // 3. ParsingRule Checker.
-    	
-//    	topic = getThreeDepth(targetSystem, eventName, payload);
-    	
-        return site + "/" + env + "/" + targetSystem + "/CMN/00";
+
+        try{
+            Objects.requireNonNull(ruleResult);
+            return ruleResult;
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            System.err.println(
+                    e
+            );
+        }
+
+        return this.ruleExecutor.basicSequenceRule();
+
+    }
+
+    private String getCommonTopic(String seq){
+        return "/" + "CMN" + "/" +  seq;
     }
     
-    /**
-     * only using BRA
-     **/
-    public String getTargetName(String payload){    	
-    	return getTargetName(payload, payload, payload);
-    }
 
     
 

@@ -15,7 +15,7 @@
       "position": null,
       "type": "EQP",
       "target": "BRS"
-    },
+    },d
     {
       "eventName": "BRS_TRACK_IN_REQ",
       "parsingItem": "eqpId",

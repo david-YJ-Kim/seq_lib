@@ -1,6 +1,12 @@
 package com.abs.common.seq.code;
 
 public enum SeqCommonCode {
+
+    CMN,
+    EQP,
+    CARR,
+    LOT,
+
     eventNameRule,
     parsingRule,
 
