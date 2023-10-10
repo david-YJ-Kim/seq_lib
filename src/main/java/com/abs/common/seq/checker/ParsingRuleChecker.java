@@ -1,5 +1,6 @@
 package com.abs.common.seq.checker;
 
+import com.abs.common.seq.code.SeqCommonCode;
 import com.abs.common.seq.dto.SequenceRuleDto;
 import com.abs.common.seq.util.SequenceManageUtil;
 import org.json.JSONArray;
@@ -18,31 +19,32 @@ public class ParsingRuleChecker {
         String env = "DEV"; // Property
 
         String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
-        String parsingRuleFileName = "ParsingItemRule.json";
+        String sequenceRuleFileName = "SequenceRule.json";
 
-        new ParsingRuleChecker("MCS", ruleFilesPath, parsingRuleFileName,
-                SequenceManageUtil.readFile(ruleFilesPath.concat(parsingRuleFileName)));
+        JSONObject jsonObject = new JSONObject(SequenceManageUtil.readFile(ruleFilesPath.concat(sequenceRuleFileName))).getJSONObject(SeqCommonCode.parsingRule.name());
+
+        new ParsingRuleChecker("MCS", ruleFilesPath, sequenceRuleFileName, jsonObject);
     }
 
     private final String sourceSystem;
     private String filePath;
     private String fileName;
-    private String originData;
+    private JSONObject ruleObj;
     private ConcurrentHashMap<String, ArrayList<SequenceRuleDto>> parsingRuleData;
 
 
-    public ParsingRuleChecker(String sourceSystem, String ruleFilePath, String parsingRuleFileName, String jsonData){
+    public ParsingRuleChecker(String sourceSystem, String ruleFilePath, String ruleFileName, JSONObject ruleObj){
 
         this.sourceSystem = sourceSystem;
         this.filePath = ruleFilePath;
-        this.fileName = parsingRuleFileName;
-        this.originData = jsonData;
+        this.fileName = ruleFileName;
+        this.ruleObj = ruleObj;
 
         System.out.println(
                 this.toString()
         );
 
-        parsingRuleData = this.setDataMap(sourceSystem, new JSONObject(jsonData));
+        parsingRuleData = this.setDataMap(sourceSystem, ruleObj);
 
 
     }
@@ -83,7 +85,7 @@ public class ParsingRuleChecker {
                 "sourceSystem='" + sourceSystem + '\'' +
                 ", filePath='" + filePath + '\'' +
                 ", fileName='" + fileName + '\'' +
-                ", originData='" + originData + '\'' +
+                ", originData='" + ruleObj.toString() + '\'' +
                 ", parsingRuleData=" + parsingRuleData +
                 '}';
     }
