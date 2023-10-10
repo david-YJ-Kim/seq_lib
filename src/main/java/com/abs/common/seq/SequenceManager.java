@@ -84,10 +84,10 @@ public final class SequenceManager {
         JSONObject ruleDataObj = new JSONObject(ruleData);
 
         this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
-                ruleDataObj.getJSONObject(SeqCommonCode.eventNameRule.name()));
+                ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
         this.ruleExecutor = new SequenceRuleExecutor();
         this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
-                ruleDataObj.getJSONObject(SeqCommonCode.parsingRule.name()));
+                ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
 
 
     }
@@ -146,8 +146,7 @@ public final class SequenceManager {
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
         if(sequenceRuleDto != null){
 
-            ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName,
-                    new JSONObject(payload), sequenceRuleDto);
+            ruleResult = this.ruleExecutor.executeEventRule(eventName, new JSONObject(payload), sequenceRuleDto);
 
         }else{
             // 2. if Event Rule Checker return null
