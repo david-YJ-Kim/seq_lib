@@ -1,0 +1,67 @@
+{
+  "SCENARIO_ID": {
+    "cid": "$cid",
+    "tgt": "$tgt",
+    "payload": "$payload",
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_EAP_0001": {
+    "cid": "WFS_LOAD_REQ",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+        "cid": "WFS_LOAD_REQ",
+        "tid": "202303030000000",
+        "osrc": "",
+        "otgt": "",
+        "src": "EAP",
+        "srcEqp": "",
+        "tgt": "WFS",
+        "tgtEqp": ""
+      },
+      "body": {
+        "siteId": "SVM",
+        "eqpId": "AP-TG-01",
+        "portId": "AP-TG-01_IP01",
+        "portState": "Enable",
+        "portType": "IN",
+        "userId": "EAP"
+      }
+    },
+    "type":"EQP",
+    "topic": "TBD"
+  },
+  "INOUT_EAP_0002": {
+    "cid": "WFS_DSP_WORK_REP",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+        "cid": "WFS_DSP_WORK_REP",
+        "tid": "202303030000000",
+        "osrc": "",
+        "otgt": "",
+        "src": "RTD",
+        "srcEqp": "",
+        "tgt": "WFS",
+        "tgtEqp": ""
+      },
+      "body": {
+        "siteId": "SVM",
+        "dspType": "LOT",
+        "lotId": "LOT_230327005",
+        "eqpId": "AP-TG-01",
+        "portId": "AP-TG-01_IP01,AP-TG-01_OP01",
+        "carrId": "CST_23222023,CST_23403003",
+        "prodDefId": "",
+        "procDefId": "",
+        "rsltCm": "",
+        "rsnCd": "PASS",
+        "evntCm": "",
+        "evntUserId": "WFS"
+      }
+    },
+    "type": "$type",
+    "topic": "$topic"
+  }
+}

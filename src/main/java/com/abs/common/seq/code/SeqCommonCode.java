@@ -2,6 +2,8 @@ package com.abs.common.seq.code;
 
 public enum SeqCommonCode {
 
+    ParsingItemRule,
+    EventNameRule,
     CMN,
     EQP,
     CARR,
@@ -15,6 +17,5 @@ public enum SeqCommonCode {
     position,
     type,
     target,
-    sequence,
-    itemName;
+    sequence;
 }

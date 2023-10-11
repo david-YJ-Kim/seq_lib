@@ -2,6 +2,7 @@ package com.abs.common.seq;
 
 import com.abs.common.seq.checker.EventRuleChecker;
 import com.abs.common.seq.checker.ParsingRuleChecker;
+import com.abs.common.seq.code.SeqCommonCode;
 import com.abs.common.seq.code.SystemNameList;
 import com.abs.common.seq.dto.SequenceRuleDto;
 import com.abs.common.seq.executor.SequenceRuleExecutor;
@@ -28,14 +29,14 @@ public final class SequenceManager {
         String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String eventRuleFileName = "EventNameRule.json";
         String parsingRuleFileName = "ParsingItemRule.json";
+        String sequenceRuleFileName = "SequenceRule.json";
 
         SequenceManager sequenceManager = new SequenceManager(
                 sourceSystem,
                 site,
                 env,
                 ruleFilesPath,
-                eventRuleFileName,
-                parsingRuleFileName
+                sequenceRuleFileName
         );
 
 
@@ -45,10 +46,9 @@ public final class SequenceManager {
     private String site;
     private String env;
     private String topicHeader; // SVM/DEV/
-    private String ruleFilesPath;
+    private String ruleFilePath;
 
-    private String eventRuleFileName;
-    private String parsingRuleFileName;
+    private String ruleFileName;
 
 
     private final ParsingRuleChecker parsingRuleChecker;
@@ -67,25 +67,27 @@ public final class SequenceManager {
      **/
     public SequenceManager(String sourceSystem, String site, String env, String ruleFilePath) throws IOException {
 
-        this(sourceSystem, site, env, ruleFilePath, null, null);
+        this(sourceSystem, site, env, ruleFilePath, null);
     }
 
-    public SequenceManager(String sourceSystem, String site, String env, String ruleFilesPath, String eventRuleFileName, String parsingRuleFileName) throws IOException {
+    public SequenceManager(String sourceSystem, String site, String env, String ruleFilePath, String ruleFileName) throws IOException {
 
 
         this.sourceSystem = sourceSystem;
         this.site = site;
         this.env = env;
         this.topicHeader = site+"/"+env+"/";
-        this.ruleFilesPath = ruleFilesPath;
-        this.eventRuleFileName = eventRuleFileName;
-        this.parsingRuleFileName = parsingRuleFileName;
+        this.ruleFilePath = ruleFilePath;
+        this.ruleFileName = ruleFileName;
 
-        this.eventRuleChecker = new EventRuleChecker(ruleFilesPath, eventRuleFileName,
-                SequenceManageUtil.readFile(ruleFilesPath.concat(eventRuleFileName)));
+        String ruleData = SequenceManageUtil.readFile(ruleFilePath.concat(ruleFileName));
+        JSONObject ruleDataObj = new JSONObject(ruleData);
+
+        this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
+                ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
         this.ruleExecutor = new SequenceRuleExecutor();
-        this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilesPath, parsingRuleFileName,
-                SequenceManageUtil.readFile(ruleFilesPath.concat(parsingRuleFileName)));
+        this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
+                ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
 
 
     }
@@ -144,8 +146,7 @@ public final class SequenceManager {
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
         if(sequenceRuleDto != null){
 
-            ruleResult = this.ruleExecutor.executeEventRule(eventName,
-                    new JSONObject(payload), sequenceRuleDto);
+            ruleResult = this.ruleExecutor.executeEventRule(eventName, new JSONObject(payload), sequenceRuleDto);
 
         }else{
             // 2. if Event Rule Checker return null

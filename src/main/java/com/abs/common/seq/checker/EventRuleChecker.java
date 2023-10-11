@@ -13,7 +13,7 @@ public class EventRuleChecker {
 
     private String filePath;
     private String fileName;
-    private String originData;
+    private JSONObject ruleObj;
 
 
     private ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> eventRuleData;
@@ -22,13 +22,13 @@ public class EventRuleChecker {
 
     public EventRuleChecker(){}
 
-    public EventRuleChecker(String ruleFilesPath, String eventRuleFilename, String jsonData){
+    public EventRuleChecker(String ruleFilesPath, String eventRuleFilename, JSONObject ruleObj){
 
         this.filePath = ruleFilesPath;
         this.fileName = eventRuleFilename;
-        this.originData = jsonData;
+        this.ruleObj = ruleObj;
         this.registeredEventName = new ArrayList<>();
-        eventRuleData = this.setDataMap(new JSONObject(jsonData));
+        eventRuleData = this.setDataMap(ruleObj);
 
         System.out.println(
                 this.toString()
@@ -88,7 +88,7 @@ public class EventRuleChecker {
         return "EventRuleChecker{" +
                 "filePath='" + filePath + '\'' +
                 ", fileName='" + fileName + '\'' +
-                ", originData='" + originData + '\'' +
+                ", originData='" + ruleObj.toString() + '\'' +
                 ", eventRuleData=" + eventRuleData +
                 ", registeredEventName=" + registeredEventName +
                 '}';
