@@ -11,6 +11,7 @@ public class SequenceRuleDto {
     private String type;
     private String target;
 
+    
     public SequenceRuleDto() {
     }
 
@@ -22,15 +23,17 @@ public class SequenceRuleDto {
         this(
                 jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
                 (String) jsonObject.get(SeqCommonCode.parsingItem.name()),
-                jsonObject.isNull(SeqCommonCode.position.name()) ? null : jsonObject.getInt(SeqCommonCode.position.name()),
+                jsonObject.isNull(SeqCommonCode.position.name()) ? null : jsonObject.getInt(SeqCommonCode.position.name()),                
                 (String) jsonObject.get(SeqCommonCode.type.name()),
                 jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
+                		
         );
 
     }
 
+    
 
-    public SequenceRuleDto(String eventName, String parsingItem, Integer position, String type, String target) {
+    public SequenceRuleDto(String eventName, String parsingItem,Integer position, String type, String target) {
         this.eventName = eventName;
         this.parsingItem = parsingItem;
         this.position = position;
@@ -82,7 +85,8 @@ public class SequenceRuleDto {
         this.target = target;
     }
 
-    @Override
+
+	@Override
     public String toString() {
         return "EventRuleDto{" +
                 "eventName='" + eventName + '\'' +

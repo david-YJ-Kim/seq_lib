@@ -15,5 +15,6 @@ public enum SeqCommonCode {
     position,
     type,
     target,
-    sequence;
+    sequence,
+    itemName;
 }

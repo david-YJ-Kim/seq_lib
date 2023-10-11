@@ -144,7 +144,7 @@ public final class SequenceManager {
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
         if(sequenceRuleDto != null){
 
-            ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName,
+            ruleResult = this.ruleExecutor.executeEventRule(eventName,
                     new JSONObject(payload), sequenceRuleDto);
 
         }else{
