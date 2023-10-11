@@ -99,14 +99,6 @@ public final class SequenceManager {
 
     }
 
-    private String getThreeDepth(String targetSystem, String eventName, String payload) {
-    	return "";
-    }
-    
-    private String getDetailDestination() {
-    	return "";
-    }
-
     public String getTargetName(String targetSystem, String eventName, String payload){
     	String topicName;
         String topicVal;
@@ -128,7 +120,7 @@ public final class SequenceManager {
                 topicVal = targetSystem + "/" + this.getTopicNameForMOS(targetSystem, eventName, payload);
                 break;
             default:
-                topicVal =  "";
+                topicVal = "CMN/00";
                 break;
 
         }

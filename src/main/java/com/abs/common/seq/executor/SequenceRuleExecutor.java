@@ -34,19 +34,20 @@ public class SequenceRuleExecutor {
         if(SeqCommonCode.EQP.equals(type)){
 
             topicVal = type + "/" + this.convertEqpIdintoAsciiValue(key);
+            
         }else{
             // TODO CARR, LOT, CMN인 경우 대응
             // 2.4.1. ⑥ Item Name가 EQP가 아닌 경우
             //  Position으로 입력된 자리수에서 2자리를 파싱(없으면 끝에서 2자리) 하여 숫자 변환 후 20으로 나눈 나머지 값
         	
-        	int seq = ruleDto.getPosition();
+        	String position = ruleDto.getPosition();
         	
         	topicVal = type + "/";
         	
-        	if ( seq < -1 ) {	        	
-    			topicVal.concat( parseSeqFromParsingItem( key, ruleDto.getPosition()) );
+        	if ( position != null ) {	        	
+    			topicVal.concat( parsePosFromParsingItem( key, ruleDto.getPosition()) );
     		} else {
-    			topicVal.concat( parseSeqFromParsingItem( key, key.length()-2) );
+    			topicVal.concat( parsePosFromParsingItem( key, String.valueOf(key.length()-2)) );
     		}
         }
 
@@ -63,13 +64,12 @@ public class SequenceRuleExecutor {
 
         for(SequenceRuleDto ruleDto : ruleDtoArray){
 
-			/*
-			 * if(ruleDto.getParsingItem().equals("/")){
-			 * 
-			 * // TODO "/" Depth 존재하는 항목 대응 }
-			 * 		 >> "/" 가 있는 경우 carrList/lodId 와 같은 경우가 없다면, 파싱해서 사용해야 하는지 의문입니다. 
-			 * 		 >> carrList/carrId 라면 괜찮지 않나요.
-			 */
+        	String[] item = null;
+        	
+			if(ruleDto.getParsingItem().equals("/")){
+				// TODO "/" Depth 존재하는 항목 대응
+				item = ruleDto.getParsingItem().split("/");				
+			}
 
 
             if(!ruleDto.getTarget().equals(targetSystem))
@@ -78,9 +78,19 @@ public class SequenceRuleExecutor {
 	            if(!bodyObj.isNull(ruleDto.getParsingItem())){
 	            	// TODO 파싱 아이템 존재, 작업 진행
 	            	
-	            	String key = bodyObj.getString(ruleDto.getParsingItem());
+	            	String key;
+	            	
+	            	if (item != null) {
+	            		JSONObject obj = new JSONObject(bodyObj.getString(item[0]));
+	            		for ( int i = 1 ; i < item.length-1 ; i++ ) {
+	            			obj = new JSONObject(bodyObj.getString(item[i]));
+	            		}
+	            		key = obj.getString(item[ item.length -1 ]);	            		
+	            	} else
+	            		key = bodyObj.getString(ruleDto.getParsingItem());
+	            	
 	                String type = bodyObj.getString(ruleDto.getType());
-	                String seq = bodyObj.getString(String.valueOf( (int)ruleDto.getPosition() )); 
+	                String seq = bodyObj.getString(ruleDto.getPosition() ); 
 	                
                 	// 2.3.2 ② Sequence 순서대로 ④ Parsing Item 값이 존재하는지 체크
 	                if (type != null) {
@@ -139,9 +149,18 @@ public class SequenceRuleExecutor {
 
     }
     
-    private String parseSeqFromParsingItem (String itemValue, int parsSeq) {
-    	    	
-    	return new String( itemValue.substring(parsSeq, parsSeq+1 ) );
+    private String parsePosFromParsingItem (String itemValue, String position) {
+    	
+    	if ( position.length() < 2 ) {
+    		
+    		int pos = Integer.valueOf(position);
+    		return new String( itemValue.substring(pos, pos+1 ) );
+    		
+    	}else {
+    		
+    		String[] positions = position.split(",");    		
+    		return new String( itemValue.substring(Integer.valueOf(positions[0]), Integer.valueOf(positions[1])) );
+    	}
     	
     }
     

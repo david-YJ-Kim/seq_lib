@@ -7,7 +7,7 @@ public class SequenceRuleDto {
 
     private String eventName;
     private String parsingItem;
-    private Integer position;
+    private String position;
     private String type;
     private String target;
 
@@ -22,8 +22,8 @@ public class SequenceRuleDto {
     public SequenceRuleDto(JSONObject jsonObject){
         this(
                 jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
-                (String) jsonObject.get(SeqCommonCode.parsingItem.name()),
-                jsonObject.isNull(SeqCommonCode.position.name()) ? null : jsonObject.getInt(SeqCommonCode.position.name()),                
+                (String) jsonObject.get(SeqCommonCode.parsingItem.name()),                
+                jsonObject.isNull(SeqCommonCode.position.name()) ? null : jsonObject.getString(SeqCommonCode.position.name()),                
                 (String) jsonObject.get(SeqCommonCode.type.name()),
                 jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
                 		
@@ -33,7 +33,7 @@ public class SequenceRuleDto {
 
     
 
-    public SequenceRuleDto(String eventName, String parsingItem,Integer position, String type, String target) {
+    public SequenceRuleDto(String eventName, String parsingItem, String position, String type, String target) {
         this.eventName = eventName;
         this.parsingItem = parsingItem;
         this.position = position;
@@ -61,11 +61,11 @@ public class SequenceRuleDto {
         this.parsingItem = parsingItem;
     }
 
-    public Integer getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(Integer position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
