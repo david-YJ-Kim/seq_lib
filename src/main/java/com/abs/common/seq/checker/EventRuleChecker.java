@@ -4,12 +4,15 @@ import com.abs.common.seq.dto.SequenceRuleDto;
 import com.abs.common.seq.util.SequenceManageUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EventRuleChecker {
 
+	private static final Logger log = LoggerFactory.getLogger(EventRuleChecker.class);
 
     private String filePath;
     private String fileName;

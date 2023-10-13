@@ -1,5 +1,15 @@
 package com.abs.common.seq;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 import com.abs.common.seq.checker.EventRuleChecker;
 import com.abs.common.seq.checker.ParsingRuleChecker;
 import com.abs.common.seq.code.SeqCommonCode;
@@ -7,18 +17,12 @@ import com.abs.common.seq.code.SystemNameList;
 import com.abs.common.seq.dto.SequenceRuleDto;
 import com.abs.common.seq.executor.SequenceRuleExecutor;
 import com.abs.common.seq.util.SequenceManageUtil;
-import org.json.JSONObject;
-
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 //import com.abs.mes.util.JsonUtil;
 
-
+@ConfigurationProperties(prefix="application.topic-header")
 public final class SequenceManager {
+	private static final Logger log = LoggerFactory.getLogger(SequenceManager.class);
 
     public static void main(String[] args) throws IOException {
 
@@ -26,9 +30,8 @@ public final class SequenceManager {
         String site = "SMV"; // Property
         String env = "DEV"; // Property
 
-        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
-        String eventRuleFileName = "EventNameRule.json";
-        String parsingRuleFileName = "ParsingItemRule.json";
+//        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
+        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLib_dv\\src\\main\\resources";
         String sequenceRuleFileName = "SequenceRule.json";
 
         SequenceManager sequenceManager = new SequenceManager(
@@ -39,15 +42,18 @@ public final class SequenceManager {
                 sequenceRuleFileName
         );
 
-
     }
-
+    
     private String sourceSystem;
+    
+    @Value("${site}")
     private String site;
+    
+    @Value("${env}")
     private String env;
-    private String topicHeader; // SVM/DEV/
+    
+    private String topicHeader;
     private String ruleFilePath;
-
     private String ruleFileName;
 
 
@@ -55,11 +61,6 @@ public final class SequenceManager {
     private final EventRuleChecker eventRuleChecker;
 
     private final SequenceRuleExecutor ruleExecutor;
-
-
-    private ConcurrentSkipListMap<String, Object> inputData;
-
-
 
     /**
      * iniitialized Input Data in Memory - From File Data
@@ -102,6 +103,10 @@ public final class SequenceManager {
     public String getTargetName(String targetSystem, String eventName, String payload){
     	String topicName;
         String topicVal;
+        
+        log.info("@@ -- params : target : "+ targetSystem );
+        log.info("@@ -- params : eventName : "+ eventName);
+        log.info("@@ -- params : payload : "+ payload);
 
         switch (targetSystem){
             case SystemNameList.MCS:
@@ -136,9 +141,15 @@ public final class SequenceManager {
 
         // 1. EventRuleChecker
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
-        if(sequenceRuleDto != null){
+        if(sequenceRuleDto != null){      	
 
-            ruleResult = this.ruleExecutor.executeEventRule(eventName, new JSONObject(payload), sequenceRuleDto);
+        	if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
+        		ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+        		log.info("## 1. excuteEventRule wieh targetSystem");
+        	} else {
+        		ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        		log.info("## 2. excuteEventRule wieh sequenceRuleDto.target");
+        	}
 
         }else{
             // 2. if Event Rule Checker return null
@@ -147,6 +158,10 @@ public final class SequenceManager {
             if(!ruleDtoArrayList.isEmpty()){
                 ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
                         ruleDtoArrayList);
+                log.info("## 3. executeParsingRule with ruleDtoArrayList");
+            } else {
+            	ruleResult = targetSystem.concat(getCommonTopic("00"));
+            	log.info("## 4. executeParsingRule without ruleDtoArrayList");
             }
         }
 
@@ -168,11 +183,6 @@ public final class SequenceManager {
     private String getCommonTopic(String seq){
         return "/" + "CMN" + "/" +  seq;
     }
-    
-
-    
-
-
 
 
 }

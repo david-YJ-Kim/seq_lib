@@ -63,5 +63,37 @@
     },
     "type": "$type",
     "topic": "$topic"
+  },
+   "INOUT_EAP_0003": {
+    "cid": "WFS_CARR_ID_READ",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+        "cid": "WFS_CARR_ID_READ",
+        "tid": "202303030000000",
+        "osrc": "",
+        "otgt": "",
+        "src": "RTD",
+        "srcEqp": "",
+        "tgt": "WFS",
+        "tgtEqp": ""
+      },
+      "body": {
+        "siteId": "SVM",
+        "dspType": "LOT",
+        "lotId": "LOT_230327005",
+        "eqpId": "AP-TG-07",
+        "portId": "AP-TG-01_IP01,AP-TG-01_OP01",
+        "carrId": "CST_23222023,CST_23403003",
+        "prodDefId": "",
+        "procDefId": "",
+        "rsltCm": "",
+        "rsnCd": "PASS",
+        "evntCm": "",
+        "evntUserId": "WFS"
+      }
+    },
+    "type": "$type",
+    "topic": "$topic"
   }
 }
