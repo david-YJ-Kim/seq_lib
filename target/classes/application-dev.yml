@@ -1,0 +1,6 @@
+application:
+  topic-header:
+    site: SVM
+    env: DEV    
+  parsing:
+    remaining: 20
