@@ -1,6 +1,7 @@
 application:
   topic-header:
     site: SVM
-    env: DEV    
+    env: DEV
+    source-system: RTD
   parsing:
     remaining: 20

@@ -44,6 +44,7 @@ public final class SequenceManager {
 
     }
     
+    @Value("${source-system")
     private String sourceSystem;
     
     @Value("${site}")
