@@ -18,23 +18,17 @@ public class SequenceRuleExecutor {
 	private static final Logger log = LoggerFactory.getLogger(SequenceRuleExecutor.class);
 
 	// TODO Manager에서 Exceutor 생성 시 넘어와야함.
-	private static int remaining = 20;
-	
+
+	private int maxQueueSize;
 	private String defaultTarget = "CMN/00";
 	
     public static void main(String[] args) {
 
-
-//        String id = "AP-SR-02-01";
-        String id = "AP-LA-02-01";
-//        String id = "AP-TG-02-01";
-        System.out.println(
-                id.charAt(1) + " / " + id.charAt(3) + " / " +id.charAt(4) + " / " +id.charAt(7) + " / "
-        );
-        System.out.println(
-                ((int) id.charAt(1)+ (int) id.charAt(3) + (int) id.charAt(4) + (int) id.charAt(7)) % remaining
-        );
     }
+
+	public SequenceRuleExecutor(int maxQueueSize){
+		this.maxQueueSize = maxQueueSize;
+	}
 
     public String executeEventRule(String targetName, String eventName, JSONObject payload, SequenceRuleDto ruleDto){
 
@@ -192,9 +186,9 @@ public class SequenceRuleExecutor {
     private String convertEqpIdintoAsciiValue(String eqpId){
     	
     	log.info(">>>  executeEventRule param eqpId : "+eqpId);
-    	log.info(">>>  executeEventRule remaining : "+remaining);
+    	log.info(">>>  executeEventRule maxQueueSize : "+maxQueueSize);
 
-        int val = (eqpId.charAt(1)+ (int) eqpId.charAt(3) + (int) eqpId.charAt(4) + (int) eqpId.charAt(7)) % remaining;
+        int val = (eqpId.charAt(1)+ (int) eqpId.charAt(3) + (int) eqpId.charAt(4) + (int) eqpId.charAt(7)) % maxQueueSize;
 
         log.info("## executeEventRule val : "+val);
         
@@ -216,7 +210,7 @@ public class SequenceRuleExecutor {
     	log.info("## check params : postion "+position);
     	log.info("## check value : rst "+rst);
     	
-    	return String.format("%2d", rst%remaining );
+    	return String.format("%2d", rst%maxQueueSize );
     }
     
     /**

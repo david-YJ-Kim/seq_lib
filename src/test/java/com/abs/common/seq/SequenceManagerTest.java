@@ -26,6 +26,7 @@ public class SequenceManagerTest {
         String sourceSystem = "TST"; // Property
         String site = "SMV"; // Property
         String env = "DEV"; // Property
+        int queueCount = 20; // Property
 
 //        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLib_dv\\src\\main\\resources\\";
@@ -37,7 +38,7 @@ public class SequenceManagerTest {
         JSONObject test = testObj.getJSONObject(TEST_CODE.INOUT_EAP_0003.name());
 
 
-        SequenceManager sequenceManager = new SequenceManager(sourceSystem, site, env, ruleFilesPath, sequenceRuleFileName);
+        SequenceManager sequenceManager = new SequenceManager(sourceSystem, site, env, queueCount, ruleFilesPath, sequenceRuleFileName);
         String result = sequenceManager.getTargetName(
                                 test.getString(COMMON_CODE.tgt.name()),
                                 test.getString(COMMON_CODE.cid.name()),

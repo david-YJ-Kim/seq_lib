@@ -26,8 +26,8 @@ public final class SequenceManager {
         String sourceSystem = "RTD"; // Property
         String site = "SMV"; // Property
         String env = "DEV"; // Property
+        int maxQueueCount = 20;
 
-//        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLib_dv\\src\\main\\resources";
         String sequenceRuleFileName = "SequenceRule.json";
 
@@ -35,6 +35,7 @@ public final class SequenceManager {
                 sourceSystem,
                 site,
                 env,
+                maxQueueCount,
                 ruleFilesPath,
                 sequenceRuleFileName
         );
@@ -46,6 +47,8 @@ public final class SequenceManager {
     private String site;
 
     private String env;
+
+    private int queueCount;
 
     private String topicHeader;
     private String ruleFilePath;
@@ -61,17 +64,15 @@ public final class SequenceManager {
      * iniitialized Input Data in Memory - From File Data
      * @throws IOException 
      **/
-    public SequenceManager(String sourceSystem, String site, String env, String ruleFilePath) throws IOException {
 
-        this(sourceSystem, site, env, ruleFilePath, null);
-    }
-
-    public SequenceManager(String sourceSystem, String site, String env, String ruleFilePath, String ruleFileName) throws IOException {
+    public SequenceManager(String sourceSystem, String site, String env, int queueCount,
+                            String ruleFilePath, String ruleFileName) throws IOException {
 
 
         this.sourceSystem = sourceSystem;
         this.site = site;
         this.env = env;
+        this.queueCount = queueCount;
         this.topicHeader = site+"/"+env+"/";
         this.ruleFilePath = ruleFilePath;
         this.ruleFileName = ruleFileName;
@@ -80,20 +81,14 @@ public final class SequenceManager {
         JSONObject ruleDataObj = new JSONObject(ruleData);
 
         this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
-                ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
-        this.ruleExecutor = new SequenceRuleExecutor();
+                                                     ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
+        this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
         this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
-                ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
+                                                        ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
 
 
     }
 
-
-    // Data initialized
-    public void getRuleData(String filePath, String fileName) throws IOException {
-
-
-    }
 
     public String getTargetName(String targetSystem, String eventName, String payload){
     	String topicName;
