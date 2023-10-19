@@ -7,8 +7,6 @@ import java.util.Objects;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.abs.common.seq.checker.EventRuleChecker;
 import com.abs.common.seq.checker.ParsingRuleChecker;
@@ -20,7 +18,6 @@ import com.abs.common.seq.util.SequenceManageUtil;
 
 //import com.abs.mes.util.JsonUtil;
 
-@ConfigurationProperties(prefix="application.topic-header")
 public final class SequenceManager {
 	private static final Logger log = LoggerFactory.getLogger(SequenceManager.class);
 
@@ -44,15 +41,12 @@ public final class SequenceManager {
 
     }
     
-    @Value("${source-system")
     private String sourceSystem;
-    
-    @Value("${site}")
+
     private String site;
-    
-    @Value("${env}")
+
     private String env;
-    
+
     private String topicHeader;
     private String ruleFilePath;
     private String ruleFileName;

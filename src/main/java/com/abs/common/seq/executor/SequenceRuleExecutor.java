@@ -7,21 +7,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import com.abs.common.seq.code.PayloadCommonCode;
 import com.abs.common.seq.code.SeqCommonCode;
 import com.abs.common.seq.dto.SequenceRuleDto;
 import com.google.gson.JsonArray;
 
-@ConfigurationProperties(prefix="application.parsing")
 public class SequenceRuleExecutor {
 	
 	private static final Logger log = LoggerFactory.getLogger(SequenceRuleExecutor.class);
-	
-	@Value("${remaining}")
-	private static int remaining;
+
+	// TODO Manager에서 Exceutor 생성 시 넘어와야함.
+	private static int remaining = 20;
 	
 	private String defaultTarget = "CMN/00";
 	
