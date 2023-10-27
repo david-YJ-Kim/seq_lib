@@ -1,8 +1,11 @@
-package com.abs.common.seq.dto;
+package com.abs.cmn.seq.dto;
 
-import com.abs.common.seq.code.SeqCommonCode;
+import com.abs.cmn.seq.code.SeqCommonCode;
 import org.json.JSONObject;
 
+/**
+ * 메시지 분배 룰 정보를 담은 객체
+ */
 public class SequenceRuleDto {
 
     private String eventName;

@@ -1,17 +1,15 @@
-package com.abs.common.seq.executor;
+package com.abs.cmn.seq.executor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.abs.common.seq.code.PayloadCommonCode;
-import com.abs.common.seq.code.SeqCommonCode;
-import com.abs.common.seq.dto.SequenceRuleDto;
-import com.google.gson.JsonArray;
+import com.abs.cmn.seq.code.PayloadCommonCode;
+import com.abs.cmn.seq.code.SeqCommonCode;
+import com.abs.cmn.seq.dto.SequenceRuleDto;
 
 public class SequenceRuleExecutor {
 	

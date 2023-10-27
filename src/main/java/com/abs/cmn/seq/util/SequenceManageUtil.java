@@ -1,4 +1,4 @@
-package com.abs.common.seq.util;
+package com.abs.cmn.seq.util;
 
 import java.io.*;
 import java.util.UUID;

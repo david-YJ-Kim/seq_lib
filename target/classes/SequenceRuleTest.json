@@ -95,5 +95,202 @@
     },
     "type": "$type",
     "topic": "$topic"
+  },
+  "INOUT_EAP_0004": {
+    "cid": "WFS_TOOL_COND_REP",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+          "cid": "WFS_TOOL_COND_REP",
+          "tid": "202303030000000",
+      "osrc": "",
+      "otgt": "",
+      "src": "EAP",
+      "srcEqp": "",
+      "tgt": "WFS",
+      "tgtEqp": ""
+      },
+      "body": {
+          "siteId": "SVM",
+          "eqpId": "AP-TG-01",
+          "materialList" : [
+              {
+                  "materialId": "",
+                  "pisition": ""
+              }
+          ],
+          "status": {
+              "eqpStateCd": "Idle",
+              "eqpCommStateCd": "Online",
+              "inPortId": "AP-TG-01_IP01",
+              "inPortStateCd": "Empty",
+              "inPortCommStateCd": "InService",
+              "inPortAutoModeFlag":"",
+              "outPortId": "AP-TG-01_OP01",
+              "outPortStateCd": "Empty",
+              "outPortCommStateCd": "InService",
+             "outPortAutoModeFlag":""
+          },
+          "reason": {
+              "reasonCode": "0",
+              "reasonComment": ""
+          },
+          "userId": "EAP"
+      }
+    },
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_MSG_005": {
+    "cid": "WFS_LOT_TRACK_IN_CNFM_REP",
+    "tgt": "WFS",
+    "payload": {"head":{"cid":"WFS_LOT_TRACK_IN_CNFM_REP","tid":"WFS_20230508151814045","osrc":null,"otgt":null,"src":"BRS","srcEqp":null,"tgt":"WFS","tgtEqp":null},"body":{"siteId":"SVM","lotId":"LOT_230327005","eqpId":"AP-TG-01","portId":"AP-TG-01_IP01","carrId":"CST_23222023","workId":null,"userId":"BRS","resultCode":"0","resultComment":""}},
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_MSG_006": {
+    "cid": "WFS_RECIPE_VALIDATE_REP",
+    "tgt": "WFS",
+    "payload": {"head":{"cid":"WFS_RECIPE_VALIDATE_REP","tid":"WFS_20230508151814408","src":"RMS","tgt":"WFS","tgtEqp":["AP-TG-01"],"osrc":"","otgt":""},"body":{"siteId":"SVM","eqpId":"AP-TG-01","lotId":"LOT_230327005","portId":null,"carrId":null,"prodDefId":"HB1-220101-09","procDefId":"MF-HB-220101-09","procSgmtId":"G1005","recipeList":[{"recipeId":"RCP001","workFace":"TOP"}],"resultCode":"0","resultMessage":""}},
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_MSG_007": {
+    "cid": "WFS_CARR_MOVE_REP",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+          "cid": "WFS_CARR_MOVE_REP",
+          "tid": "WFS_20230327105752730",
+        "osrc": "",
+        "otgt": "",
+        "src": "MCS",
+        "srcEqp": "",
+        "tgt": "WFS",
+        "tgtEqp": ""
+      },
+      "body": {
+      "carrId": "CST_23222023",
+          "commId": "TRANS_20230508160425940",
+          "srcEqpId": "AP-PD-05",
+          "srcPortId": "AP-PD-05_BP01",
+          "destEqpId": "AP-TG-01",
+          "destPortId": "AP-TG-01_IP01",
+          "prio": "5",
+          "resultCode": "0"
+      }
+  },
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_MSG_008": {
+    "cid": "WFS_CARR_MOVE_COMP",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+          "cid": "WFS_CARR_MOVE_COMP",
+          "tid": "WFS_20230327105752730",
+      "osrc": "",
+      "otgt": "",
+      "src": "MCS",
+      "srcEqp": "",
+      "tgt": "WFS",
+      "tgtEqp": ""
+      },
+      "body": {
+      "carrId": "CST_23222023",
+          "commId": "TRANS_20230508160425940",
+          "srcEqpId": "",
+          "srcPortId": "",
+          "destEqpId": "AP-TG-01",
+          "destPortId": "AP-TG-01_IP01",
+          "crntEqpId": "AP-TG-01",
+          "crntPortId": "AP-TG-01_IP01",
+          "prio": "5",
+          "carrMoveStat": "COMPLETED ",
+          "resultCode": "0"
+      }
+  },
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "INOUT_MSG_009": {
+    "cid": "WFS_LOAD_COMP",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+          "cid": "WFS_LOAD_COMP",
+          "tid": "202303030000000",
+      "osrc": "",
+      "otgt": "",
+      "src": "EAP",
+      "srcEqp": "",
+      "tgt": "WFS",
+      "tgtEqp": ""
+      },
+      "body": {
+          "siteId": "SVM",
+          "eqpId": "AP-TG-01",
+      "portId": "AP-TG-01_IP01",
+      "portType": "BP",
+      "userId": "EAP"
+      }
+  },
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "WFS_CARR_SLOTMAP_REPORT_REQ": {
+    "cid": "CID",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+          "cid": "WFS_CARR_SLOTMAP_REPORT_REQ",
+          "tid": "202303030000000",
+      "osrc": "",
+      "otgt": "",
+      "src": "EAP",
+      "srcEqp": "",
+      "tgt": "WFS",
+      "tgtEqp": ""
+      },
+      "body": {
+          "siteId": "SVM",
+          "eqpId": "AP-TG-01",
+      "portId": "AP-TG-01_IP01",
+      "portType": "IP",
+      "carrId": "CST_23222023",
+      "slotMap": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+      "userId": "WFS"
+      }
+  },
+    "type": "$type",
+    "topic": "$topic"
+  },
+  "WFS_CARR_ID_READ": {
+    "cid": "WFS_CARR_ID_READ",
+    "tgt": "WFS",
+    "payload": {
+      "head": {
+        "cid": "WFS_CARR_ID_READ",
+        "tid": "202303030000000",
+        "osrc": "",
+        "otgt": "",
+        "src": "EAP",
+        "srcEqp": "",
+        "tgt": "WFS",
+        "tgtEqp": ""
+      },
+      "body": {
+        "siteId": "SVM",
+        "eqpId": "AP-TG-01",
+        "portId": "AP-TG-01_IP01",
+        "portType": "IP",
+        "carrId": "CST_23222023",
+        "slotMap": "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1",
+        "userId": "WFS"
+      }
+    },
+    "type": "$type",
+    "topic": "$topic"
   }
 }

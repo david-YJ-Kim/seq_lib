@@ -1,7 +1,7 @@
-package com.abs.common.seq.checker;
+package com.abs.cmn.seq.checker;
 
-import com.abs.common.seq.dto.SequenceRuleDto;
-import com.abs.common.seq.util.SequenceManageUtil;
+import com.abs.cmn.seq.util.SequenceManageUtil;
+import com.abs.cmn.seq.dto.SequenceRuleDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;

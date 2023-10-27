@@ -1,15 +1,14 @@
-package com.abs.common.seq.checker;
+package com.abs.cmn.seq.checker;
 
-import com.abs.common.seq.code.SeqCommonCode;
-import com.abs.common.seq.dto.SequenceRuleDto;
-import com.abs.common.seq.util.SequenceManageUtil;
+import com.abs.cmn.seq.util.SequenceManageUtil;
+import com.abs.cmn.seq.code.SeqCommonCode;
+import com.abs.cmn.seq.dto.SequenceRuleDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ParsingRuleChecker {
 

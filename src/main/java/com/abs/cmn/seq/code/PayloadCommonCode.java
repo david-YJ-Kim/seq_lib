@@ -1,4 +1,4 @@
-package com.abs.common.seq.code;
+package com.abs.cmn.seq.code;
 
 public enum PayloadCommonCode {
     head,
