@@ -9,7 +9,8 @@ import java.io.IOException;
 enum TEST_CODE{
     INOUT_EAP_0001,
     INOUT_EAP_0002, 
-    INOUT_EAP_0003;
+    INOUT_EAP_0003,
+    WFS_CARR_ID_READ;
 }
 
 enum COMMON_CODE{
@@ -23,7 +24,7 @@ public class SequenceManagerTest {
 
     public static void main(String[] args) throws IOException {
 
-        String sourceSystem = "TST"; // Property
+        String sourceSystem = "RTD"; // Property
         String site = "SMV"; // Property
         String env = "DEV"; // Property
 
@@ -34,18 +35,18 @@ public class SequenceManagerTest {
 
         JSONObject testObj = new JSONObject(SequenceManageUtil.readFile(ruleFilesPath.concat(sequenceRuleFileTestName)));
 
-        JSONObject test = testObj.getJSONObject(TEST_CODE.INOUT_EAP_0003.name());
+        JSONObject test = testObj.getJSONObject(TEST_CODE.WFS_CARR_ID_READ.name());
 
 
         SequenceManager sequenceManager = new SequenceManager(sourceSystem, site, env, ruleFilesPath, sequenceRuleFileName);
-        String result = sequenceManager.getTargetName(
-                                test.getString(COMMON_CODE.tgt.name()),
-                                test.getString(COMMON_CODE.cid.name()),
-                                test.getJSONObject(COMMON_CODE.payload.name()).toString()
+        String topicResult = sequenceManager.getTargetName(
+                                test.getString(COMMON_CODE.tgt.name()), // target 시스템 코드 (ex) WFS, BRS, RTD, ...)
+                                test.getString(COMMON_CODE.cid.name()), // 이벤트 명 (ex) WFS_CARR_ID_READ)
+                                test.getJSONObject(COMMON_CODE.payload.name()).toString() // 메시지 전문
                         );
 
         System.out.println(
-                result
+                topicResult
         );
     }
 }

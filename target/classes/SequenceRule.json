@@ -1,4 +1,5 @@
 {
+  "QueueCount": 20,
   "ParsingItemRule": {
     "$SourceSystem": {
       "$TargetSystem-A": [
@@ -38,11 +39,121 @@
           "position": 7,
           "type": "LOT"
         }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": null,
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
       ]
     },
 
     "MCS": {
       "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": null,
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": null,
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ]
+    },
+    "RTD": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": null,
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
         {
           "parsingItem": "carrId",
           "position": null,
