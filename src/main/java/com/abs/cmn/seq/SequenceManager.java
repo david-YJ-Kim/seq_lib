@@ -115,10 +115,12 @@ public final class SequenceManager {
         logger.info("@@ -- params : payload : "+ payload);
 
         switch (targetSystem){
+            
+            case SystemNameList.EAP:
+            	topicVal = getTopicNameSelectFromSource(this.sourceSystem, targetSystem, eventName, payload);
             case SystemNameList.MCS:
             case SystemNameList.FDC:
             case SystemNameList.SPC:
-            case SystemNameList.EAP:
             case SystemNameList.RMS:
             case SystemNameList.RTD:
             case SystemNameList.MSS:
@@ -187,6 +189,40 @@ public final class SequenceManager {
 
     }
 
+    private String getTopicNameForRMS(String targetSystem, String eventName, String payload) {
+    	String ruleResult = null;
+    	
+    	ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
+        if(!ruleDtoArrayList.isEmpty()){
+            ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
+                    ruleDtoArrayList);
+            logger.info("## 3. executeParsingRule with ruleDtoArrayList");
+        } else {
+        	ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
+        	logger.info("## 4. executeParsingRule without ruleDtoArrayList");
+        }
+        
+        try{
+            Objects.requireNonNull(ruleResult);
+            return ruleResult;
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            System.err.println(
+                    e
+            );
+        }
+    	
+    	return this.ruleExecutor.basicSequenceRule();
+    }
+    
+    private String getTopicNameSelectFromSource(String sourceSystem, String targetSystem, String eventName, String payload) {
+    	
+    	if (sourceSystem.equals(SystemNameList.RMS) || sourceSystem.equals(SystemNameList.WFS))
+    		return targetSystem+"/"+this.getTopicNameForRMS(targetSystem, eventName, payload);
+    	else
+    		return targetSystem + SequenceManageUtil.getCommonDefaultTopic();    	
+    }
 
     @Override
     public String toString() {
