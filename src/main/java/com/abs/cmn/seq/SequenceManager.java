@@ -19,7 +19,7 @@ import com.abs.cmn.seq.executor.SequenceRuleExecutor;
 //import com.abs.mes.util.JsonUtil;
 
 public final class SequenceManager {
-	private static final Logger log = LoggerFactory.getLogger(SequenceManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(SequenceManager.class);
 
     public static void main(String[] args) throws IOException {
 
@@ -59,44 +59,60 @@ public final class SequenceManager {
 
     private final SequenceRuleExecutor ruleExecutor;
 
-    /**
-     * iniitialized Input Data in Memory - From File Data
-     * @throws IOException 
-     **/
 
+    /**
+     * 시퀀스 라이브러리 초기화를 위한 기본 생성자
+     * @param sourceSystem
+     * @param site
+     * @param env
+     * @param ruleFilePath
+     * @param ruleFileName
+     * @throws IOException
+     */
     public SequenceManager(String sourceSystem, String site, String env,
                             String ruleFilePath, String ruleFileName) throws IOException {
+
+        logger.info("SequenceManager start to initialize. Parameter for constructor." +
+                " sourceSystem: {}, site: {}, env: {}," +
+                " ruleFilePath: {}. ruleFileName: {}",
+                sourceSystem, site, env, ruleFilePath, ruleFileName);
 
 
         this.sourceSystem = sourceSystem;
         this.site = site;
         this.env = env;
-        this.queueCount = queueCount;
         this.topicHeader = site+"/"+env+"/";
         this.ruleFilePath = ruleFilePath;
         this.ruleFileName = ruleFileName;
 
-        String ruleData = SequenceManageUtil.readFile(ruleFilePath.concat(ruleFileName));
-        JSONObject ruleDataObj = new JSONObject(ruleData);
-        this.queueCount = ruleDataObj.getInt(SeqCommonCode.QueueCount.name());
+        JSONObject ruleDataObj = new JSONObject(SequenceManageUtil.readFile(ruleFilePath.concat(ruleFileName)));
 
+        this.queueCount = ruleDataObj.getInt(SeqCommonCode.QueueCount.name());
         this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
                                                      ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
         this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
         this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
                                                         ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
 
+        logger.info("SequenceManager has been initialized. Print SequenceManager clas information." + System.lineSeparator()
+                + "{}", this.toString());
+
 
     }
 
-
+    /**
+     *
+     * @param targetSystem
+     * @param eventName
+     * @param payload
+     * @return
+     */
     public String getTargetName(String targetSystem, String eventName, String payload){
     	String topicName;
         String topicVal;
-        
-        log.info("@@ -- params : target : "+ targetSystem );
-        log.info("@@ -- params : eventName : "+ eventName);
-        log.info("@@ -- params : payload : "+ payload);
+
+
+        logger.info("@@ -- params : payload : "+ payload);
 
         switch (targetSystem){
             case SystemNameList.MCS:
@@ -107,16 +123,16 @@ public final class SequenceManager {
             case SystemNameList.RTD:
             case SystemNameList.MSS:
             case SystemNameList.CRS:
-                topicVal = targetSystem + this.getCommonTopic("00");
+                topicVal = targetSystem + SequenceManageUtil.getCommonDefaultTopic();
                 break;
 
             case SystemNameList.WFS:
             case SystemNameList.BRS:
-                topicVal = targetSystem + "/" + this.getTopicNameForMOS(targetSystem, eventName, payload);
+                topicVal = targetSystem + this.getTopicNameForMOS(targetSystem, eventName, payload);
                 break;
             default:
                 // TODO targetSystem이 없는 경우는..?
-                topicVal = "CMN/00";
+                topicVal = "ERR" + SequenceManageUtil.getCommonDefaultTopic();
                 break;
 
         }
@@ -136,10 +152,10 @@ public final class SequenceManager {
 
         	if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
         		ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
-        		log.info("## 1. excuteEventRule wieh targetSystem");
+        		logger.info("## 1. excuteEventRule wieh targetSystem");
         	} else {
         		ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-        		log.info("## 2. excuteEventRule wieh sequenceRuleDto.target");
+        		logger.info("## 2. excuteEventRule wieh sequenceRuleDto.target");
         	}
 
         }else{
@@ -149,10 +165,10 @@ public final class SequenceManager {
             if(!ruleDtoArrayList.isEmpty()){
                 ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
                         ruleDtoArrayList);
-                log.info("## 3. executeParsingRule with ruleDtoArrayList");
+                logger.info("## 3. executeParsingRule with ruleDtoArrayList");
             } else {
-            	ruleResult = targetSystem.concat(getCommonTopic("00"));
-            	log.info("## 4. executeParsingRule without ruleDtoArrayList");
+            	ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
+            	logger.info("## 4. executeParsingRule without ruleDtoArrayList");
             }
         }
 
@@ -167,13 +183,24 @@ public final class SequenceManager {
             );
         }
 
-        return this.ruleExecutor.basicSequenceRule();
+        return "/" + this.ruleExecutor.basicSequenceRule();
 
     }
 
-    private String getCommonTopic(String seq){
-        return "/" + "CMN" + "/" +  seq;
+
+    @Override
+    public String toString() {
+        return "SequenceManager{" +
+                "sourceSystem='" + sourceSystem + '\'' +
+                ", site='" + site + '\'' +
+                ", env='" + env + '\'' +
+                ", queueCount=" + queueCount +
+                ", topicHeader='" + topicHeader + '\'' +
+                ", ruleFilePath='" + ruleFilePath + '\'' +
+                ", ruleFileName='" + ruleFileName + '\'' +
+                ", parsingRuleChecker=" + parsingRuleChecker +
+                ", eventRuleChecker=" + eventRuleChecker +
+                ", ruleExecutor=" + ruleExecutor +
+                '}';
     }
-
-
 }

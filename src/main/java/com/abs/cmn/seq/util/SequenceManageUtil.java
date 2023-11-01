@@ -1,5 +1,7 @@
 package com.abs.cmn.seq.util;
 
+import com.abs.cmn.seq.code.SeqCommonCode;
+
 import java.io.*;
 import java.util.UUID;
 
@@ -43,6 +45,13 @@ public class SequenceManageUtil {
             );
             throw new NullPointerException("Underscores not found in the string.");
         }
+    }
+
+    public static String getCommonDefaultTopic(){
+        return SequenceManageUtil.getCommonTopic("00");
+    }
+    public static String getCommonTopic(String seq){
+        return "/" + SeqCommonCode.CMN.name() + "/" + seq;
     }
 
 }
