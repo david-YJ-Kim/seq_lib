@@ -10,6 +10,8 @@ public enum SeqCommonCode {
     CARR,
     LOT,
 
+    eqpId,
+
     eventNameRule,
     parsingRule,
 

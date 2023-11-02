@@ -81,7 +81,20 @@ public class EventRuleChecker {
             );
             return null;
         }else{
-            return  this.eventRuleData.get(targetSystem).get(eventName);
+
+            if(this.eventRuleData.get(targetSystem) == null){
+                log.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
+                return null;
+            }else {
+                return this.eventRuleData.get(targetSystem).get(eventName);
+            }
+
+//            SequenceRuleDto ruleDto = this.eventRuleData.get(targetSystem).get(eventName);
+//            if(ruleDto == null){
+//                log.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
+//                return null;
+//            }
+//            return  this.eventRuleData.get(targetSystem).get(eventName);
         }
     }
 

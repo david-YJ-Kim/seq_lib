@@ -28,8 +28,8 @@ public class SequenceManagerTest {
         String site = "SMV"; // Property
         String env = "DEV"; // Property
 
-//        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
-        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLibrary\\src\\main\\resources\\";
+        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
+//        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLibrary\\src\\main\\resources\\";
         String sequenceRuleFileName = "SequenceRule.json";
         String sequenceRuleFileTestName = "SequenceRuleTest.json";
 

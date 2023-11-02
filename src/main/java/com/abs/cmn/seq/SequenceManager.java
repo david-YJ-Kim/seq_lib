@@ -90,9 +90,9 @@ public final class SequenceManager {
         this.queueCount = ruleDataObj.getInt(SeqCommonCode.QueueCount.name());
         this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
                                                      ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
-        this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
         this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
                                                         ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
+        this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
 
         logger.info("SequenceManager has been initialized. Print SequenceManager clas information." + System.lineSeparator()
                 + "{}", this.toString());
@@ -108,94 +108,117 @@ public final class SequenceManager {
      * @return
      */
     public String getTargetName(String targetSystem, String eventName, String payload){
+        // topic Header = SVM/DEV/
     	String topicName;
         String topicVal;
 
-
         logger.info("@@ -- params : payload : "+ payload);
-
-        switch (targetSystem){
-            
-            case SystemNameList.EAP:
-            	topicVal = getTopicNameForEAP(this.sourceSystem, targetSystem, eventName, payload);
-            	break;
-            case SystemNameList.MCS:
-            case SystemNameList.FDC:
-            case SystemNameList.SPC:
-            case SystemNameList.RMS:
-            case SystemNameList.RTD:
-            case SystemNameList.MSS:
-            case SystemNameList.CRS:
-                topicVal = targetSystem + SequenceManageUtil.getCommonDefaultTopic();
-                break;
-
-            case SystemNameList.WFS:
-            case SystemNameList.BRS:
-                topicVal = targetSystem + this.getTopicNameForMOS(targetSystem, eventName, payload);
-                break;
-            default:
-                // TODO targetSystem이 없는 경우는..?
-                topicVal = "ERR" + SequenceManageUtil.getCommonDefaultTopic();
-                break;
-
-        }
-
-        topicName = topicHeader.concat(topicVal);
-        return topicName;
-
-    }
-
-
-    private String getTopicNameForMOS(String targetSystem, String eventName, String payload){
-        String ruleResult = "/";
-
         // 1. EventRuleChecker
-        SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
-        if(sequenceRuleDto != null){      	
-
-        	if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
-        		ruleResult += this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
-        		logger.info("## 1. excuteEventRule wieh targetSystem");
-        	} else {
-        		ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-        		logger.info("## 2. excuteEventRule wieh sequenceRuleDto.target");
-        	}
+        String checkEventRuleResult = this.checkEventRule(targetSystem, eventName, payload);
+        if(checkEventRuleResult != null){
+             // EAP +
+            topicVal = targetSystem + checkEventRuleResult;
 
         }else{
-            // 2. if Event Rule Checker return null
-            // 3. ParsingRule Checker.
-            ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
-            if(!ruleDtoArrayList.isEmpty()){
-                ruleResult += this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
-                        ruleDtoArrayList);
-                logger.info("## 3. executeParsingRule with ruleDtoArrayList");
-            } else {
-            	ruleResult += targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
-            	logger.info("## 4. executeParsingRule without ruleDtoArrayList");
+
+            switch (targetSystem){
+
+                case SystemNameList.EAP:
+                    topicVal = targetSystem + getTopicNameForEAP(this.sourceSystem, targetSystem, eventName, payload);
+                    break;
+
+                case SystemNameList.MCS:
+                case SystemNameList.FDC:
+                case SystemNameList.SPC:
+                case SystemNameList.RMS:
+                case SystemNameList.RTD:
+                case SystemNameList.MSS:
+                case SystemNameList.CRS:
+                    topicVal = targetSystem + SequenceManageUtil.getCommonDefaultTopic();
+                    break;
+
+                case SystemNameList.WFS:
+                case SystemNameList.BRS:
+                    topicVal = targetSystem + this.getTopicNameForMOS(targetSystem, eventName, payload);
+                    break;
+                default:
+                    // TODO targetSystem이 없는 경우는..?
+                    topicVal = "ERR" + SequenceManageUtil.getCommonDefaultTopic();
+                    break;
+
             }
         }
 
+        topicName = topicHeader.concat(topicVal);
+
         try{
-            Objects.requireNonNull(ruleResult);
-            return ruleResult;
+            Objects.requireNonNull(topicVal);
+            return topicName;
 
         }catch (NullPointerException e){
             e.printStackTrace();
-            System.err.println(
-                    e
-            );
+            logger.error(e.toString());
+            return topicHeader + "/" + this.ruleExecutor.basicSequenceRule();
         }
 
-        return "/" + this.ruleExecutor.basicSequenceRule();
+
+    }
+
+    private String checkEventRule(String targetSystem, String eventName, String payload){
+        String ruleResult = null;
+
+        // 1. EventRuleChecker
+        SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
+        if(sequenceRuleDto != null){
+
+            // 룰에 등록된 Target과 요청 받은 Target이 동일한지 확인
+            // 서로 다를 경우, 룰에 등록된 타켓 정보를 우선으로 분배
+            if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
+                ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+                logger.info("## 1. executeEventRule with targetSystem");
+
+            } else {
+                ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+                logger.info("## 2. executeEventRule with sequenceRuleDto.target");
+
+            }
+
+        }
+
+        // $큐타입/$큐 키
+        return ruleResult;
+    }
+
+    private String getTopicNameForEAP(String sourceSystem, String targetSystem, String eventName, String payload) {
+
+        return "/" + ruleExecutor.executeEAPParsingRule(new JSONObject(payload));
+
+    }
+
+    private String getTopicNameForMOS(String targetSystem, String eventName, String payload){
+
+        String ruleResult = null;
+
+        logger.info("Event Rule is not registered.");
+        // 3. ParsingRule Checker.
+        ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
+        if(!ruleDtoArrayList.isEmpty()){
+            ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
+                    ruleDtoArrayList);
+            logger.info("## 3. executeParsingRule with ruleDtoArrayList");
+        } else {
+            ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
+            logger.info("## 4. executeParsingRule without ruleDtoArrayList");
+        }
+
+
+
+        return "/" + ruleResult;
 
     }
 
     
-    private String getTopicNameForEAP(String sourceSystem, String targetSystem, String eventName, String payload) {
-    	
-		return targetSystem+"/"+ruleExecutor.executeEAPParsingRule(targetSystem, new JSONObject(payload));
 
-    }
 
     @Override
     public String toString() {
