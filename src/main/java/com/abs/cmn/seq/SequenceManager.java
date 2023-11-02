@@ -147,7 +147,7 @@ public final class SequenceManager {
 
 
     private String getTopicNameForMOS(String targetSystem, String eventName, String payload){
-        String ruleResult = null;
+        String ruleResult = "/";
 
         // 1. EventRuleChecker
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);

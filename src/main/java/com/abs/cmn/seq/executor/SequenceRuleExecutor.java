@@ -92,7 +92,7 @@ public class SequenceRuleExecutor {
                 topicVal
         );
 
-        return "/" + topicVal;
+        return topicVal;
     }
 
     public String executeParsingRule(String targetSystem, String eventName, JSONObject payload, ArrayList<SequenceRuleDto> ruleDtoArray){
