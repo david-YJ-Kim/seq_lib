@@ -19,6 +19,7 @@ public class SequenceRuleExecutor {
 
 	private int maxQueueSize;
 	private String defaultTarget = "CMN/00";
+	private String eapParsingItem = "eqpId";
 	
     public static void main(String[] args) {
 
@@ -175,6 +176,13 @@ public class SequenceRuleExecutor {
         
         // Parsing Item 값이 존재하지 않으면, targetSystem + CMN/00 로 종료
         return topicVal.concat(basicSequenceRule());
+    }
+    
+    public String executeEAPParsingRule(String targetSystem, JSONObject payload){
+    	String topicVal= "CMN/";
+    	JSONObject bodyObj = payload.getJSONObject(PayloadCommonCode.body.name());
+    	
+    	return topicVal.concat(bodyObj.getString(eapParsingItem));
     }
 
     public String basicSequenceRule(){
