@@ -6,7 +6,7 @@
 
   <groupId>com.abs.cmn.seq</groupId>
   <artifactId>seqLibrary</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   
   <name>seqLibrary</name>
 
