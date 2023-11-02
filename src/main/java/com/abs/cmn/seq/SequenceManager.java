@@ -154,10 +154,10 @@ public final class SequenceManager {
         if(sequenceRuleDto != null){      	
 
         	if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
-        		ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+        		ruleResult += this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
         		logger.info("## 1. excuteEventRule wieh targetSystem");
         	} else {
-        		ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        		ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
         		logger.info("## 2. excuteEventRule wieh sequenceRuleDto.target");
         	}
 
@@ -166,11 +166,11 @@ public final class SequenceManager {
             // 3. ParsingRule Checker.
             ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
             if(!ruleDtoArrayList.isEmpty()){
-                ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
+                ruleResult += this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
                         ruleDtoArrayList);
                 logger.info("## 3. executeParsingRule with ruleDtoArrayList");
             } else {
-            	ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
+            	ruleResult += targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
             	logger.info("## 4. executeParsingRule without ruleDtoArrayList");
             }
         }
