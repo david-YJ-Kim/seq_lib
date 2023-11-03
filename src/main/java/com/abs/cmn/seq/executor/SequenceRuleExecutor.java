@@ -46,11 +46,11 @@ public class SequenceRuleExecutor {
     	
         // 큐 타입 설정
     	if (type != null) {
-			topicVal.concat(type).concat("/");
+			topicVal = type.concat("/");
 
 		}else{
 			// 큐 타입 미등록 시, CMN 으로 리턴
-			topicVal.concat(SeqCommonCode.CMN.name()).concat("/");
+			topicVal = SeqCommonCode.CMN.name().concat("/");
 		};
     	
 		// 큐 키 설정
@@ -154,12 +154,12 @@ public class SequenceRuleExecutor {
 					// 타입을 설정한다.
 	                if ( ruleDto.getType() != null ) {
 	                	type = ruleDto.getType();
-	                	topicVal += type.concat("/");
+	                	topicVal = type.concat("/");
 	                	log.info("2. topicVal "+topicVal);
 
 	                } else {
 	                	// TODO EQP외 대응 (CARR, LOT, CMN)
-	                	topicVal += parseFromParsingItemName(key).concat("/");
+	                	topicVal = parseFromParsingItemName(key).concat("/");
 	                	log.info("3. topicVal "+topicVal);
 	                }
 	                
@@ -171,6 +171,7 @@ public class SequenceRuleExecutor {
 	                
 	                if ( ruleDto.getPosition() != null ) {
 	                	position = bodyObj.getString(ruleDto.getPosition() );
+
 
 						return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
 
@@ -187,7 +188,7 @@ public class SequenceRuleExecutor {
         }
         
         // Parsing Item 값이 존재하지 않으면, targetSystem + CMN/00 로 종료
-        return "/" + topicVal.concat(basicSequenceRule());
+        return topicVal.concat(basicSequenceRule());
     }
 
 	/**
@@ -258,7 +259,7 @@ public class SequenceRuleExecutor {
 				res = Integer.valueOf(key.substring(position, position + 2)) % maxQueueSize;
 			}
 
-			return "/" + String.format("%02d", res);
+			return String.format("%02d", res);
 
     }
 
