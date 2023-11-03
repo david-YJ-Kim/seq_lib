@@ -285,20 +285,26 @@ public class SequenceRuleExecutor {
     }
     
     private String parseParsingItemDepth(String parsingItem, JSONObject bodyObj) {
-
-		// carridList/carrid
 		
-    	String[] item = parsingItem.split("/"); // [0] carridList // [1] carrid
+    	// 파싱 item depth 를 나눔   ex) [0] carridList // [1] carrid
+    	String[] item = parsingItem.split("/"); 
 		log.info("## executeParsingRule - parsingItem depth process");
 		
 		JSONObject obj = new JSONObject(bodyObj.getString(item[0]));
-
-		for ( int i = 1 ; i < item.length - 3 ; i++ ) {
-			obj = new JSONObject( obj.getString(item[i]) );
-		}
-		JSONArray jsnArr = obj.getJSONArray(item[ item.length -2 ]);
+		JSONArray jsonArray = obj.getJSONArray(item[0]);
+		String key = null;
 		
-		return ((JSONObject) jsnArr.get(0)).getString(item[item.length-1]);
+		for ( int i = 0 ; i < jsonArray.length() ; i++ ) {
+			obj = jsonArray.getJSONObject(i).getJSONObject(item[1]);
+			if (obj.get(item[i]) != null) {
+				key = String.valueOf(obj.get(item[i]));
+				break;
+			} else {
+				continue;
+			}
+		}
+		
+		return key;
     }
     
     
