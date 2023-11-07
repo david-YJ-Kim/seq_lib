@@ -1,5 +1,6 @@
 package com.abs.cmn.seq.util;
 
+import com.abs.cmn.seq.checker.code.CheckerCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
 
 import java.io.*;
@@ -52,6 +53,18 @@ public class SequenceManageUtil {
     }
     public static String getCommonTopic(String seq){
         return "/" + SeqCommonCode.CMN.name() + "/" + seq;
+    }
+
+    public static String generateErcKey(){
+        return SequenceManageUtil.generateCheckerKey(CheckerCommonCode.ERC.name());
+    }
+
+    public static String generatePrcKey(){
+        return SequenceManageUtil.generateCheckerKey(CheckerCommonCode.PRC.name());
+    }
+
+    public static String generateCheckerKey(String prefix){
+        return prefix + System.currentTimeMillis();
     }
 
 }

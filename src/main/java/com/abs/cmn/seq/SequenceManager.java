@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import com.abs.cmn.seq.util.SequenceManageUtil;
+import com.abs.cmn.seq.util.file.RuleFileWatcher;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public final class SequenceManager {
         String site = "SMV"; // Property
         String env = "DEV"; // Property
 
-        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLib_dv\\src\\main\\resources";
+        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String sequenceRuleFileName = "SequenceRule.json";
 
         SequenceManager sequenceManager = new SequenceManager(
@@ -46,7 +47,6 @@ public final class SequenceManager {
 
     private String env;
 
-    // TODO 큐 개수 설정은 각 시스템에서 설정할 게 아니라, 감춰야 함.
     private int queueCount;
 
     private String topicHeader;
@@ -56,8 +56,9 @@ public final class SequenceManager {
 
     private final ParsingRuleChecker parsingRuleChecker;
     private final EventRuleChecker eventRuleChecker;
-
     private final SequenceRuleExecutor ruleExecutor;
+
+    private final Thread ruleFileWatcherThread;
 
 
     /**
@@ -93,6 +94,10 @@ public final class SequenceManager {
         this.parsingRuleChecker = new ParsingRuleChecker(sourceSystem, ruleFilePath, ruleFileName,
                                                         ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
         this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
+
+        this.ruleFileWatcherThread = this.initializeFileWatcher();
+        this.ruleFileWatcherThread.start();
+
 
         logger.info("SequenceManager has been initialized. Print SequenceManager clas information." + System.lineSeparator()
                 + "{}", this.toString());
@@ -216,6 +221,24 @@ public final class SequenceManager {
         return "/" + ruleResult;
 
     }
+
+
+    private Thread initializeFileWatcher(){
+        Thread watcherThread = new Thread(new RuleFileWatcher(this, this.ruleFilePath, this.ruleFileName));
+        return watcherThread;
+    }
+
+    public void fileChangeDetecting(String fileName, String fileContent){
+        logger.info("File change event detected. fileName: {}, fileContent: {}", fileName, fileContent);
+
+        JSONObject reloadedRuleFileObj = new JSONObject(fileContent);
+        // TODO Rule File 검증 프로세스 호출
+        
+        this.eventRuleChecker.sequenceDataBackUp();
+        this.eventRuleChecker.sequenceDataReload(reloadedRuleFileObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
+        
+        // TODO Rule File 갱신 파일 생성
+    };
 
     
 

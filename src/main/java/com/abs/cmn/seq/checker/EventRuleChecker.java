@@ -1,5 +1,6 @@
 package com.abs.cmn.seq.checker;
 
+import com.abs.cmn.seq.checker.code.CheckerCommonCode;
 import com.abs.cmn.seq.util.SequenceManageUtil;
 import com.abs.cmn.seq.dto.SequenceRuleDto;
 import org.json.JSONArray;
@@ -10,44 +11,147 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EventRuleChecker {
+public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<String, SequenceRuleDto>> {
 
-	private static final Logger log = LoggerFactory.getLogger(EventRuleChecker.class);
+	private static final Logger logger = LoggerFactory.getLogger(EventRuleChecker.class);
 
     private String filePath;
     private String fileName;
-    private JSONObject ruleObj;
+    private JSONObject currentRuleObject;
 
+    private ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> ruleDataMap;
 
-    private ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> eventRuleData;
+    private ConcurrentHashMap<String, JSONObject> ruleDataHistoryMap;
+    private ArrayList<String> ruleHistoryKeySequenceList;
 
     private ArrayList<String> registeredEventName;
 
-    public EventRuleChecker(){}
-
-    public EventRuleChecker(String ruleFilesPath, String eventRuleFilename, JSONObject ruleObj){
+    public EventRuleChecker(String ruleFilesPath, String eventRuleFilename, JSONObject ruleObject){
 
         this.filePath = ruleFilesPath;
         this.fileName = eventRuleFilename;
-        this.ruleObj = ruleObj;
+        this.currentRuleObject = ruleObject;
         this.registeredEventName = new ArrayList<>();
-        eventRuleData = this.setDataMap(ruleObj);
+        this.ruleHistoryKeySequenceList = new ArrayList<>();
 
-        System.out.println(
-                this.toString()
-        );
+        this.ruleDataHistoryMap = new ConcurrentHashMap<>();
+        this.ruleDataHistoryMap.put(CheckerCommonCode.INIT.name(), ruleObject);
+        this.ruleHistoryKeySequenceList.add(CheckerCommonCode.INIT.name());
+
+        ruleDataMap = this.setSequenceData(ruleObject);
+
+        logger.info("Class has been initialize. Print out class parameters:{}", this.toString());
 
     }
 
-    private ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> setDataMap(JSONObject dataObj){
+    @Override
+    public ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> setSequenceData(JSONObject currentRuleObject) {
+
 
         ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> map = new ConcurrentHashMap<>();
 
-        for (String key: dataObj.keySet()){
-            map.put(key, this.setEventRuleArray(dataObj.getJSONArray(key)));
+        this.generateRuleDataMap(map, currentRuleObject);
+        return map;
+
+    }
+
+
+    @Override
+    public boolean sequenceDataBackUp() {
+
+        String ruleKey = SequenceManageUtil.generateErcKey();
+
+        try{
+            this.ruleDataHistoryMap.put(ruleKey, this.currentRuleObject);
+            this.ruleHistoryKeySequenceList.add(ruleKey);
+            if(this.ruleDataHistoryMap.contains(ruleKey) && this.ruleHistoryKeySequenceList.contains(ruleKey)){
+
+                logger.info("Rule data has been back-up ed. ruleKey:{}, currentRuleObjectData :{}, ruleSequenceList:{}, historyMap:{}",
+                        ruleKey, this.currentRuleObject, this.ruleHistoryKeySequenceList.toString(), ruleDataHistoryMap.toString());
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("Error while back-up current data." +
+                    " currentRuleObjectData :{}, ruleSequenceList:{}, historyMap:{}",
+                    this.currentRuleObject, this.ruleHistoryKeySequenceList.toString(), ruleDataHistoryMap.toString());
+            return false;
+
         }
 
-        return map;
+
+        return false;
+    }
+
+    @Override
+    public boolean sequenceDataReload(JSONObject ruleObject) {
+
+        // Back up temporary rule obj for in case.
+        JSONObject tmpCurrentRuleObj = this.currentRuleObject;
+        String ruleKey = SequenceManageUtil.generateErcKey();
+        
+        try{
+
+            // 실제 Map Update 하는 로직
+            boolean reloadResultSuccess = this.updateRuleDataMap(ruleObject);
+            if(!reloadResultSuccess){
+                logger.error("Fail to reload with rule object: {}. its key: {}", ruleObject.toString(), ruleKey);
+                return false;
+            }
+            this.currentRuleObject = ruleObject;
+
+            return true;
+
+        }catch (Exception e){
+
+            this.currentRuleObject = tmpCurrentRuleObj;
+
+            if(ruleDataHistoryMap.contains(ruleKey)){
+                this.ruleDataHistoryMap.remove(ruleKey);
+            }
+
+            if(ruleHistoryKeySequenceList.contains(ruleKey)){
+                this.ruleHistoryKeySequenceList.remove(ruleKey);
+            }
+
+            return false;
+        }
+    }
+
+    public SequenceRuleDto getEventRule(String eventName){
+
+        return this.getEventRule(SequenceManageUtil.getTargetSystem(eventName),eventName);
+    }
+
+    public SequenceRuleDto getEventRule(String targetSystem, String eventName){
+
+        if(!registeredEventName.contains(eventName)){
+            System.out.println(
+                    "Event Name is not registered"
+            );
+            return null;
+        }else{
+
+            if(this.ruleDataMap.get(targetSystem) == null){
+                logger.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
+                return null;
+            }else {
+                return this.ruleDataMap.get(targetSystem).get(eventName);
+            }
+
+        }
+    }
+
+    private void generateRuleDataMap(ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> dataMap, JSONObject ruleObj){
+
+        for (String key: ruleObj.keySet()){
+            ConcurrentHashMap<String, SequenceRuleDto> value = this.setEventRuleArray(ruleObj.getJSONArray(key));
+            dataMap.put(key, value);
+            logger.info("Sequence rule data generate map with key: {}, value: {}", key, value.toString());
+        }
+        logger.info("Rule data map has been generated. rulObject: {}. data map: {}",
+                ruleObj.toString(), dataMap.toString());
+
     }
 
     private ConcurrentHashMap<String, SequenceRuleDto> setEventRuleArray(JSONArray jsonArray){
@@ -68,33 +172,42 @@ public class EventRuleChecker {
 
     }
 
-    public SequenceRuleDto getEventRule(String eventName){
+    /**
+     *
+     * @param ruleObj
+     * @return
+     */
+    private boolean updateRuleDataMap(JSONObject ruleObj){
 
-        return this.getEventRule(SequenceManageUtil.getTargetSystem(eventName),eventName);
-    }
+        try{
 
-    public SequenceRuleDto getEventRule(String targetSystem, String eventName){
+            synchronized (this.ruleDataMap){
 
-        if(!registeredEventName.contains(eventName)){
-            System.out.println(
-                    "Event Name is not registered"
-            );
-            return null;
-        }else{
+//                for (String key: currentRuleObject.keySet()){
+//                    this.ruleDataMap.remove(key);
+//                    logger.info("Sequence data going to update. Remove key: {}", key);
+//                }
+                this.ruleDataMap.clear();
+                logger.info("Current Rule data map has been cleared. Data Map: {}", this.ruleDataMap.toString());
 
-            if(this.eventRuleData.get(targetSystem) == null){
-                log.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
-                return null;
-            }else {
-                return this.eventRuleData.get(targetSystem).get(eventName);
+                // Add new data
+                this.generateRuleDataMap(this.ruleDataMap, ruleObj);
+                logger.info("Current Rule data map has been reloaded.");
+
             }
 
-//            SequenceRuleDto ruleDto = this.eventRuleData.get(targetSystem).get(eventName);
-//            if(ruleDto == null){
-//                log.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
-//                return null;
-//            }
-//            return  this.eventRuleData.get(targetSystem).get(eventName);
+            return true;
+        }catch (Exception e){
+
+            // Error Occur, Need to update with current Data.
+            synchronized (this.ruleDataMap){
+
+                this.generateRuleDataMap(this.ruleDataMap, this.currentRuleObject);
+            }
+
+            e.printStackTrace();
+            logger.error("Error occurred while reload rule data And Complete to rollback. e:{}, errorMessage:{}", e, e.getMessage());
+            return  false;
         }
     }
 
@@ -104,9 +217,11 @@ public class EventRuleChecker {
         return "EventRuleChecker{" +
                 "filePath='" + filePath + '\'' +
                 ", fileName='" + fileName + '\'' +
-                ", originData='" + ruleObj.toString() + '\'' +
-                ", eventRuleData=" + eventRuleData +
+                ", originData='" + currentRuleObject.toString() + '\'' +
+                ", ruleDataMap=" + ruleDataMap +
                 ", registeredEventName=" + registeredEventName +
                 '}';
     }
+
+
 }

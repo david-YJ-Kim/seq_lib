@@ -1,5 +1,6 @@
 package com.abs.cmn.seq.util.file;
 
+import com.abs.cmn.seq.SequenceManager;
 import com.abs.cmn.seq.util.SequenceManageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,17 +9,25 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.concurrent.CountDownLatch;
 
-public class FileWatcher implements Runnable{
+public class RuleFileWatcher implements Runnable{
 
-    public static Logger logger = LoggerFactory.getLogger(FileWatcher.class);
+    public static Logger logger = LoggerFactory.getLogger(RuleFileWatcher.class);
 
     private final String filePath;
     private final String fileName;
 
-    public FileWatcher(String filePath, String fileName){
+    private final SequenceManager sequenceManager;
+
+    public RuleFileWatcher(SequenceManager sequenceManager, String filePath, String fileName){
+        this.sequenceManager = sequenceManager;
         this.fileName = fileName;
         this.filePath = filePath;
     }
+
+//    public RuleFileWatcher(String filePath, String fileName){
+//        this.fileName = fileName;
+//        this.filePath = filePath;
+//    }
 
     @Override
     public void run() {
@@ -46,8 +55,10 @@ public class FileWatcher implements Runnable{
 
                     // File 이름 조회
                     if(fileName.equals(file.getFileName().toString())){
+                        String fileContent = SequenceManageUtil.readFile(this.filePath.concat(fileName));
                         logger.info("{} file has been modified. its file Name: {}, file Content: {}",
-                                System.currentTimeMillis(), file.getFileName(), SequenceManageUtil.readFile(this.filePath.concat(fileName)));
+                                System.currentTimeMillis(), file.getFileName(), fileContent);
+                        this.sequenceManager.fileChangeDetecting(file.getFileName().toString(), fileContent);
                     }else{
                         logger.warn("This is not target file. fileName:{}", file.getFileName().toString());
                     }
@@ -118,7 +129,7 @@ public class FileWatcher implements Runnable{
         CountDownLatch doneSignal = new CountDownLatch(numThread); // Done signal
 
         for (int i = 0; i < numThread; i ++){
-            Thread watcher = new Thread(new FileWatcher(testFilepath, fileName));
+            Thread watcher = new Thread(new RuleFileWatcher(null, testFilepath, fileName));
             watcher.start();
         }
 

@@ -43,15 +43,15 @@ public class ParsingRuleChecker {
                 this.toString()
         );
 
-        parsingRuleData = this.setDataMap(sourceSystem, ruleObj);
+        parsingRuleData = this.setDataMap(ruleObj);
 
 
     }
 
-    private ConcurrentHashMap<String, ArrayList<SequenceRuleDto>> setDataMap(String sourceSystem, JSONObject dataObj){
+    private ConcurrentHashMap<String, ArrayList<SequenceRuleDto>> setDataMap(JSONObject dataObj){
 
         ConcurrentHashMap map = new ConcurrentHashMap();
-        JSONObject object = dataObj.getJSONObject(sourceSystem);
+        JSONObject object = dataObj.getJSONObject(this.sourceSystem);
         for(String key: object.keySet()){
             map.put(key, this.setParsingSequenceArray(object.getJSONArray(key)));
         }
