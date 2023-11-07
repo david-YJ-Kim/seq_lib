@@ -1,6 +1,7 @@
 package com.abs.cmn.seq.checker;
 
 import com.abs.cmn.seq.checker.code.CheckerCommonCode;
+import com.abs.cmn.seq.checker.util.RuleCheckerUtil;
 import com.abs.cmn.seq.util.SequenceManageUtil;
 import com.abs.cmn.seq.dto.SequenceRuleDto;
 import org.json.JSONArray;
@@ -26,17 +27,18 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
 
     private ArrayList<String> registeredEventName;
 
+    private final RuleCheckerUtil util = new RuleCheckerUtil();
+
     public EventRuleChecker(String ruleFilesPath, String eventRuleFilename, JSONObject ruleObject){
 
         this.filePath = ruleFilesPath;
         this.fileName = eventRuleFilename;
         this.currentRuleObject = ruleObject;
         this.registeredEventName = new ArrayList<>();
-        this.ruleHistoryKeySequenceList = new ArrayList<>();
 
+        this.ruleHistoryKeySequenceList = new ArrayList<>();
         this.ruleDataHistoryMap = new ConcurrentHashMap<>();
-        this.ruleDataHistoryMap.put(CheckerCommonCode.INIT.name(), ruleObject);
-        this.ruleHistoryKeySequenceList.add(CheckerCommonCode.INIT.name());
+        util.saveHistory(CheckerCommonCode.INIT.name(), ruleObject, this.ruleDataHistoryMap, this.ruleHistoryKeySequenceList);
 
         ruleDataMap = this.setSequenceData(ruleObject);
 
@@ -62,8 +64,8 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
         String ruleKey = SequenceManageUtil.generateErcKey();
 
         try{
-            this.ruleDataHistoryMap.put(ruleKey, this.currentRuleObject);
-            this.ruleHistoryKeySequenceList.add(ruleKey);
+            util.saveHistory(ruleKey, this.currentRuleObject, this.ruleDataHistoryMap, this.ruleHistoryKeySequenceList);
+
             if(this.ruleDataHistoryMap.contains(ruleKey) && this.ruleHistoryKeySequenceList.contains(ruleKey)){
 
                 logger.info("Rule data has been back-up ed. ruleKey:{}, currentRuleObjectData :{}, ruleSequenceList:{}, historyMap:{}",
@@ -105,14 +107,7 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
         }catch (Exception e){
 
             this.currentRuleObject = tmpCurrentRuleObj;
-
-            if(ruleDataHistoryMap.contains(ruleKey)){
-                this.ruleDataHistoryMap.remove(ruleKey);
-            }
-
-            if(ruleHistoryKeySequenceList.contains(ruleKey)){
-                this.ruleHistoryKeySequenceList.remove(ruleKey);
-            }
+            util.deleteHistory(ruleKey, this.ruleDataHistoryMap, this.ruleHistoryKeySequenceList);
 
             return false;
         }
@@ -210,6 +205,7 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
             return  false;
         }
     }
+
 
 
     @Override

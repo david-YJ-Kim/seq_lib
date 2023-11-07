@@ -1,5 +1,5 @@
 {
-  "QueueCount": 6,
+  "QueueCount": 10,
   "ParsingItemRule": {
     "$SourceSystem": {
       "$TargetSystem-A": [

@@ -233,9 +233,14 @@ public final class SequenceManager {
 
         JSONObject reloadedRuleFileObj = new JSONObject(fileContent);
         // TODO Rule File 검증 프로세스 호출
-        
+
+        // ERC
         this.eventRuleChecker.sequenceDataBackUp();
         this.eventRuleChecker.sequenceDataReload(reloadedRuleFileObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
+
+        // PRC
+        this.parsingRuleChecker.sequenceDataBackUp();
+        this.parsingRuleChecker.sequenceDataReload(reloadedRuleFileObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
         
         // TODO Rule File 갱신 파일 생성
     };
