@@ -40,14 +40,14 @@ public class SequenceRuleExecutor {
         String type = ruleDto.getType();
         String key = payload.getJSONObject(PayloadCommonCode.body.name()).getString(ruleDto.getParsingItem());
         // TODO parsingItem이 payload-body에 없는 경우
-
+        log.info("@@ executeEventRule Parsing item : "+ruleDto.getParsingItem());
         log.info("@@ executeEventRule type : "+type);
     	log.info("@@ executeEventRule key : "+key);
     	
         // 큐 타입 설정
     	if (type != null) {
 			topicVal = type.concat("/");
-
+			log.info("## executeEventRule ---- log set type : " +topicVal);
 		}else{
 			// 큐 타입 미등록 시, CMN 으로 리턴
 			topicVal = SeqCommonCode.CMN.name().concat("/");
@@ -127,6 +127,8 @@ public class SequenceRuleExecutor {
 	            	String type = "";
 	                String position = "";                
 	            	
+	                log.info("## parsing item : "+ruleDto.getParsingItem());
+	                
 	            	/**
 	            	 * 2.3.2 ② Sequence 순서대로 ④ Parsing Item 값이 존재하는지 체크
 	            	 * key value setting, from parsing item
@@ -142,7 +144,16 @@ public class SequenceRuleExecutor {
 					// Depth 없는 경우 (1)
 	    			} else {
 
-	    				key = checkIdValueArry(bodyObj.getString(ruleDto.getParsingItem()));
+	    				// value에 , 가 있는 array 일 때
+	    				if( bodyObj.getString(ruleDto.getParsingItem()).indexOf(",") != -1 ) {
+	    					
+	    					key = checkIdValueArry(bodyObj.getString(ruleDto.getParsingItem()).split(",")[0]);
+	    					
+    					// value가 1개의 값이며, 한개의 아이템 일 때 
+	    				} else {
+	    					key = checkIdValueArry(bodyObj.getString(ruleDto.getParsingItem()));
+	    				}
+	    					
 	    			}
 	                
 
