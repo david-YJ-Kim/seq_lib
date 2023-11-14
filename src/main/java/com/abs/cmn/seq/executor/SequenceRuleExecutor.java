@@ -1,7 +1,6 @@
 package com.abs.cmn.seq.executor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.abs.cmn.seq.code.PayloadCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
 import com.abs.cmn.seq.dto.SequenceRuleDto;
-import com.abs.cmn.seq.util.SequenceManageUtil;
 
 public class SequenceRuleExecutor {
 	
@@ -109,11 +107,19 @@ public class SequenceRuleExecutor {
         String topicVal = null;//targetSystem.concat("/");
         
 //        log.info("1. topicVal "+topicVal);
-
+        int i = 0;
         for(SequenceRuleDto ruleDto : ruleDtoArray){
+        	i++;
         	topicVal = null;
-        	// 룰 타겟 AP 와  입력된 송신 대상 타겟 시스템이 같다
-            if( ruleDto.getTarget() != null && ruleDto.getTarget().equals(targetSystem)) {
+        	// 룰에 등록된 타켓정보와 요청받은 타겟 시스템이 다른 경우
+            if( ruleDto.getTarget() != null && !ruleDto.getTarget().equals(targetSystem)) {
+            	log.info(">> 36. executeParsingRule - targetSystem : CMN : " + i);
+                return this.basicSequenceRule();
+                
+			// 룰 타겟 AP 와  입력된 송신 대상 타겟 시스템이 같다 
+            } else {
+
+            	log.info(">> 33. check getParsingItem : "+i+" : "+ruleDto.getParsingItem());
             	
             	// 룰에 파싱 아이템이 있는 경우
 	            if(!bodyObj.isNull(ruleDto.getParsingItem())){
@@ -121,7 +127,7 @@ public class SequenceRuleExecutor {
 	            	String key = "";
 	                String position = "";                
 	            	
-	                log.info("## parsing item : "+ruleDto.getParsingItem());
+	                log.info(">> 34. parsing item Not null ");
 	                
 	            	/**
 	            	 * 2.3.2 ② Sequence 순서대로 ④ Parsing Item 값이 존재하는지 체크
@@ -132,86 +138,60 @@ public class SequenceRuleExecutor {
 					
 					// 파싱 아이템이 Depth 경우
 	            	if(ruleDto.getParsingItem().indexOf("/") != -1){
-
+	            		
+	            		log.info(">> 34-1. Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
 	    				key = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
-	    				
-	    				// item 값이 "" 이거나 null 인 경우!!
-	    				if (  key == null || key.contentEquals("") ) {
-    						continue;
-    						
-    					} else {
-    						// 4 단계 파싱
-    						topicVal = getTypeIdParsingRule(ruleDto, key);
-    						
-    						/**
-    	                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
-    	                	 * > ItemName( := type ) check 4 depth
-    	                	 **/	     
-    						if ( ruleDto.getPosition() != null ) {
-    		                	position = bodyObj.getString(ruleDto.getPosition() );
-    		                	log.info("################################# rule : "+ruleDto.toString());
-    		                	return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
-
-    		                } else {
-    		                	log.info("################################# rule : "+ruleDto.toString());
-    		                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
-    		                }
-    					}
 	    				
 					// Depth 없는 경우 (1)
 	    			} else {
+	    				log.info(">> 34-2. Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
 
-	    				// value에 , 가 있는 array 일 때  -> CMN/00 으로 return  // 잘못 된 메세지 구조 
-	    				if( bodyObj.getString(ruleDto.getParsingItem()).indexOf(",") != -1 ) {	    					
-	    					break;
-	    					
-    					// value가 1개의 값이며, 한개의 아이템 일 때 
+	    				// value에 , 가 있는 array 일 때  -> CMN/00 으로 return  // 잘못 된 메세지 구조
+	    				if (bodyObj.getString(ruleDto.getParsingItem()).indexOf(",") != -1 ) {
+	    					log.info(">> 34-1. value Depth parsing item : "+key);
+	    					continue;
 	    				} else {
-	    					
-	    					// item 값이 "" 이거나 null 인 경우!! 또는 키값의 마지막 자리 가 문자인 경우
-	    					if (  key == null || key.contentEquals("")) {
-	    						continue;
-	    						
-	    					} else {
-	    						key = bodyObj.getString(ruleDto.getParsingItem());
-	    						// 4 단계 파싱
-	    						topicVal = getTypeIdParsingRule(ruleDto, key);
-	    						
-	    						/**
-	    	                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
-	    	                	 * > ItemName( := type ) check 4 depth
-	    	                	 **/	     
-	    						if ( ruleDto.getPosition() != null ) {
-	    		                	position = bodyObj.getString(ruleDto.getPosition() );
-	    		                	log.info("################################# rule : "+ruleDto.toString());
-	    		                	return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
-
-	    		                } else {
-	    		                	log.info("################################# rule : "+ruleDto.toString());	    		                	
-	    		                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
-	    		                }
-	    					}
+	    					log.info(">> 34-1. parsing item : "+key);
+	    					key = bodyObj.getString(ruleDto.getParsingItem());
 	    				}
+ 
 	    			}
+	            	
+	            		            	
+	            	// item 값이 "" 이거나 null 인 경우!! cpzm
+    				if (  key == null || key.contentEquals("") ) {
+						continue;
+					} else {
+						// 4 단계 파싱
+						topicVal = getTypeIdParsingRule(ruleDto, key);
+						
+						/**
+	                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
+	                	 * > ItemName( := type ) check 4 depth
+	                	 **/	     
+						if ( ruleDto.getPosition() != null ) {
+		                	position = bodyObj.getString(ruleDto.getPosition() );
+		                	log.info("################################# rule : "+ruleDto.toString());
+		                	return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
+
+		                } else {
+		                	log.info("################################# rule : "+ruleDto.toString());
+		                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
+		                }
+						
+					}
 	                
 	            // TODO EQP 용 대응
 	             // 룰에 파싱 아이템이 아예 없는 경우
 	            } else {
-					log.info("No Item defined");
-	            	continue;
+					log.info(" >> 35. No Item defined : " + i);	            	
 	            }
-            
-			// 룰에 등록된 타켓정보와 요청받은 타겟 시스템이 다른 경우
-            } else {
-
-            	log.info("## executeParsingRule - targetSystem ");
-                return this.basicSequenceRule();
                 
             }	
         }
         
         // Parsing Item 값이 존재하지 않으면, targetSystem + CMN/00 로 종료
-        return topicVal.concat(this.basicSequenceRule());
+        return topicVal=this.basicSequenceRule();
     }
     
     private String getTypeIdParsingRule(SequenceRuleDto ruleDto, String key ) {
