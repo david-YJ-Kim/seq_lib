@@ -163,7 +163,7 @@ public final class SequenceManager {
         }catch (NullPointerException e){
             e.printStackTrace();
             logger.error(e.toString());
-            return topicHeader + "/" + this.ruleExecutor.basicSequenceRule();
+            return topicHeader + SequenceManageUtil.getCommonDefaultTopic();
         }
 
 

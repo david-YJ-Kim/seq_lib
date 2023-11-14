@@ -2,6 +2,7 @@ package com.abs.cmn.seq.util;
 
 import com.abs.cmn.seq.checker.code.CheckerCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
+import com.abs.cmn.seq.dto.SequenceRuleDto;
 
 import java.io.*;
 import java.util.UUID;

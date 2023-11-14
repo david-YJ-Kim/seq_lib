@@ -12,26 +12,27 @@ enum TEST_CODE{
 //    INOUT_EAP_0003,
 //    INOUT_EAP_0004,
 //    INOUT_MSG_005,
-//    INOUT_MSG_006,
-//    INOUT_MSG_007,
+    INOUT_MSG_006,
+    INOUT_MSG_007,
 //    INOUT_MSG_008,
 //    INOUT_MSG_009,
 //    WFS_CARR_SLOTMAP_REPORT_REQ,
-//    WFS_CARR_ID_READ,
-//	BRS_CARR_HOLD,
-//	BRS_CARR_HOLD_RELEASE,
-//	BRS_CARR_STATE_CHANGE_CLEAN,
-//	BRS_CARR_STATE_CHANGE_DIRTY,
-//	BRS_LOT_TRACK_IN_CNFM_REP,
-//	WFS_LOAD_REQ,
-//	WFS_DSP_WORK_REP,
+    WFS_CARR_ID_READ,
+	BRS_CARR_HOLD,
+	BRS_CARR_HOLD_RELEASE,
+	BRS_CARR_STATE_CHANGE_CLEAN,
+	BRS_CARR_STATE_CHANGE_DIRTY,
+	BRS_LOT_TRACK_IN_CNFM_REP,
+	WFS_LOAD_REQ,
+	WFS_DSP_WORK_REP,
 //	WFS_CARR_ID_READ,
-//	WFS_TOOL_COND_REP,
-//	WFS_LOT_TRACK_IN_CNFM_REP,
-//	WFS_RECIPE_VALIDATE_REP,
-	WFS_CARR_MOVE_REP,
-	WFS_CARR_MOVE_COMP,
-	WFS_LOAD_COMP,
+	WFS_TOOL_COND_REP,
+	WFS_LOT_TRACK_IN_CNFM_REP,
+	WFS_RECIPE_VALIDATE_REP,
+//	WFS_CARR_MOVE_REP,
+//	WFS_CARR_MOVE_COMP,
+//	WFS_LOAD_COMP,
+	BRS_ALARM_EXECUTE
 	;
 }
 
@@ -42,6 +43,7 @@ enum COMMON_CODE{
     type,
     topic;
 }
+
 public class SequenceManagerTest {
 
     public static void main(String[] args) throws IOException {
@@ -77,5 +79,6 @@ public class SequenceManagerTest {
 	                " @@@  > "+value.name()+" : "+topicResult
 	        );
         }
+        
     }
 }

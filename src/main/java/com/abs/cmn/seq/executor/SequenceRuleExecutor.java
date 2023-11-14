@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.abs.cmn.seq.code.PayloadCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
 import com.abs.cmn.seq.dto.SequenceRuleDto;
+import com.abs.cmn.seq.util.SequenceManageUtil;
 
 public class SequenceRuleExecutor {
 	
@@ -100,31 +101,24 @@ public class SequenceRuleExecutor {
 		// $TYPE/$KEY
         return "/" + topicVal;
     }
-
+    
+    
     public String executeParsingRule(String targetSystem, String eventName, JSONObject payload, ArrayList<SequenceRuleDto> ruleDtoArray){
 
         JSONObject bodyObj = payload.getJSONObject(PayloadCommonCode.body.name());
         String topicVal = null;//targetSystem.concat("/");
         
-        log.info("1. topicVal "+topicVal);
+//        log.info("1. topicVal "+topicVal);
 
         for(SequenceRuleDto ruleDto : ruleDtoArray){
-
-			// 룰에 등록된 타켓정보와 요청받은 타겟 시스템이 다른 경우
-            if( ruleDto.getTarget() != null && !ruleDto.getTarget().equals(targetSystem)) {
+        	topicVal = null;
+        	// 룰 타겟 AP 와  입력된 송신 대상 타겟 시스템이 같다
+            if( ruleDto.getTarget() != null && ruleDto.getTarget().equals(targetSystem)) {
             	
-            	log.info("## executeParsingRule - targetSystem ");
-                return targetSystem.concat("/").concat(basicSequenceRule());
-
-			// 룰과 요청 타겟 시스템이 같다
-            } else {
-
-				// 룰에 파싱 아이템이 있는 경우
+            	// 룰에 파싱 아이템이 있는 경우
 	            if(!bodyObj.isNull(ruleDto.getParsingItem())){
-
-	            	String[] item = null;
+	            	
 	            	String key = "";
-	            	String type = "";
 	                String position = "";                
 	            	
 	                log.info("## parsing item : "+ruleDto.getParsingItem());
@@ -135,72 +129,115 @@ public class SequenceRuleExecutor {
 	            	 * parsing Item depth ? get array[0].item value : parsingItem value 
 	            	 **/
 
-					// TODO 다시 개발
+					
 					// 파싱 아이템이 Depth 경우
 	            	if(ruleDto.getParsingItem().indexOf("/") != -1){
 
 	    				key = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
+	    				
+	    				// item 값이 "" 이거나 null 인 경우!!
+	    				if (  key == null || key.contentEquals("") ) {
+    						continue;
+    						
+    					} else {
+    						// 4 단계 파싱
+    						topicVal = getTypeIdParsingRule(ruleDto, key);
+    						
+    						/**
+    	                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
+    	                	 * > ItemName( := type ) check 4 depth
+    	                	 **/	     
+    						if ( ruleDto.getPosition() != null ) {
+    		                	position = bodyObj.getString(ruleDto.getPosition() );
+    		                	log.info("################################# rule : "+ruleDto.toString());
+    		                	return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
 
+    		                } else {
+    		                	log.info("################################# rule : "+ruleDto.toString());
+    		                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
+    		                }
+    					}
+	    				
 					// Depth 없는 경우 (1)
 	    			} else {
 
-	    				// value에 , 가 있는 array 일 때
-	    				if( bodyObj.getString(ruleDto.getParsingItem()).indexOf(",") != -1 ) {
-	    					
-	    					key = checkIdValueArry(bodyObj.getString(ruleDto.getParsingItem()).split(",")[0]);
+	    				// value에 , 가 있는 array 일 때  -> CMN/00 으로 return  // 잘못 된 메세지 구조 
+	    				if( bodyObj.getString(ruleDto.getParsingItem()).indexOf(",") != -1 ) {	    					
+	    					break;
 	    					
     					// value가 1개의 값이며, 한개의 아이템 일 때 
 	    				} else {
-	    					key = checkIdValueArry(bodyObj.getString(ruleDto.getParsingItem()));
-	    				}
 	    					
+	    					// item 값이 "" 이거나 null 인 경우!! 또는 키값의 마지막 자리 가 문자인 경우
+	    					if (  key == null || key.contentEquals("")) {
+	    						continue;
+	    						
+	    					} else {
+	    						key = bodyObj.getString(ruleDto.getParsingItem());
+	    						// 4 단계 파싱
+	    						topicVal = getTypeIdParsingRule(ruleDto, key);
+	    						
+	    						/**
+	    	                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
+	    	                	 * > ItemName( := type ) check 4 depth
+	    	                	 **/	     
+	    						if ( ruleDto.getPosition() != null ) {
+	    		                	position = bodyObj.getString(ruleDto.getPosition() );
+	    		                	log.info("################################# rule : "+ruleDto.toString());
+	    		                	return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
+
+	    		                } else {
+	    		                	log.info("################################# rule : "+ruleDto.toString());	    		                	
+	    		                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
+	    		                }
+	    					}
+	    				}
 	    			}
 	                
-
-                	/**
-                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
-                	 * > ItemName( := type ) check 4 depth
-                	 **/
-
-					// 타입을 설정한다.
-	                if ( ruleDto.getType() != null ) {
-	                	type = ruleDto.getType();
-	                	topicVal = type.concat("/");
-	                	log.info("2. topicVal "+topicVal);
-
-	                } else {
-	                	// TODO EQP외 대응 (CARR, LOT, CMN)
-	                	topicVal = parseFromParsingItemName(key).concat("/");
-	                	log.info("3. topicVal "+topicVal);
-	                }
-	                
-	                /**
-                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
-                	 * > ItemName( := type ) check 4 depth
-                	 **/
-	                log.info("@@. topicVal "+topicVal);
-	                
-	                if ( ruleDto.getPosition() != null ) {
-	                	position = bodyObj.getString(ruleDto.getPosition() );
-
-
-						return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)) );
-
-	                } else {
-	                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-2));
-	                }
-	                
-	                // TODO EQP 용 대응
+	            // TODO EQP 용 대응
+	             // 룰에 파싱 아이템이 아예 없는 경우
 	            } else {
 					log.info("No Item defined");
 	            	continue;
 	            }
+            
+			// 룰에 등록된 타켓정보와 요청받은 타겟 시스템이 다른 경우
+            } else {
+
+            	log.info("## executeParsingRule - targetSystem ");
+                return this.basicSequenceRule();
+                
             }	
         }
         
         // Parsing Item 값이 존재하지 않으면, targetSystem + CMN/00 로 종료
-        return topicVal.concat(basicSequenceRule());
+        return topicVal.concat(this.basicSequenceRule());
     }
+    
+    private String getTypeIdParsingRule(SequenceRuleDto ruleDto, String key ) {
+    	String type = "";
+        String topicVal = null;
+    	
+        /**
+    	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
+    	 * > ItemName( := type ) check 4 depth
+    	 **/
+
+		// 타입을 설정한다.
+        if ( ruleDto.getType() != null ) {
+        	type = ruleDto.getType();
+        	log.info("2. topicVal "+topicVal);
+        	topicVal = type.concat("/");
+
+        } else {
+        	// TODO EQP외 대응 (CARR, LOT, CMN)
+        	topicVal = parseFromParsingItemName(key).concat("/");
+        	log.info("3. topicVal "+topicVal);
+        }
+        
+    	return topicVal;
+    }
+    
 
 	/**
 	 *
@@ -260,15 +297,23 @@ public class SequenceRuleExecutor {
     		log.info("## itemValue substring (return) "+key.substring(position, position+2));
 
 			int res = 0;
-			// 등록 키에 포지션 두 자리를 가져오지 못할 때
-    		if (key.substring(position, position+2).length() < 2){
-
-				res = Integer.valueOf(key.substring(position, position + 1)) % maxQueueSize;
-
-			// 등록 키에 포지션이 두자리 이상인지 (두자리를 가져올 수 있는지)
-			}else {
-				res = Integer.valueOf(key.substring(position, position + 2)) % maxQueueSize;
-			}
+			
+			// Key 값의 마지막 글자가 문자가 아닌 경우 그냥 나눔
+			if ( Character.isDigit(key.charAt(key.length()-1 )) ) {
+				// 등록 키에 포지션 으로 부터 두 자리의 값을 가져오지 못할 때
+	    		if (key.substring(position, position+2).length() < 2){
+	
+					res = Integer.valueOf(key.substring(position, position + 1)) % maxQueueSize;
+	
+				// 등록 키에 포지션이 두자리 이상인지 (두자리를 가져올 수 있는지)
+				}else {
+					res = Integer.valueOf(key.substring(position, position + 2)) % maxQueueSize;
+				}
+	    		
+    		// Key 값의 마지막 글자가 문자인 경우 00 리턴 
+    		} else {
+    			res = 0;
+    		}
 
 			return String.format("%02d", res);
 
@@ -319,15 +364,15 @@ public class SequenceRuleExecutor {
     }
     
     
-    private String checkIdValueArry (String idValue) {
-		
-		// Value 내 "," 존재 시, 첫번째 값을 리턴
-    	if ( idValue.contains(",") ) {
-    		String[] ids = idValue.split(",");
-    		return ids[0];
-    	}
-
-    	return idValue;
-    }
+//    private String checkIdValueArry (String idValue) {
+//		
+//		// Value 내 "," 존재 시, 첫번째 값을 리턴
+//    	if ( idValue.contains(",") ) {
+//    		String[] ids = idValue.split(",");
+//    		return ids[0];
+//    	}
+//
+//    	return idValue;
+//    }
 
 }
