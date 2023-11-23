@@ -131,7 +131,12 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
                 logger.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
                 return null;
             }else {
-                return this.ruleDataMap.get(targetSystem).get(eventName);
+            	if(this.ruleDataMap.get(targetSystem) == null){
+                    logger.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
+                    return null;
+                }else {
+                    return this.ruleDataMap.get(targetSystem).get(eventName);
+                }
             }
 
         }

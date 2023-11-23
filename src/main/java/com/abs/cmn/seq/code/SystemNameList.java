@@ -12,4 +12,5 @@ public final class SystemNameList {
     public static final String MSS = "MSS";
     public static final String FDC = "FDC";
     public static final String SPC = "SPC";
+    public static final String OIA = "OIA";
 }

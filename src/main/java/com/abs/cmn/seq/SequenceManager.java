@@ -176,17 +176,26 @@ public final class SequenceManager {
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
         if(sequenceRuleDto != null){
 
+        	logger.info("@@ -- checkEventRule : sequenceRuleDto : not null , "+ sequenceRuleDto.toString());
             // 룰에 등록된 Target과 요청 받은 Target이 동일한지 확인
             // 서로 다를 경우, 룰에 등록된 타켓 정보를 우선으로 분배
-            if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
-                ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
-                logger.info("## 1. executeEventRule with targetSystem");
-
-            } else {
-                ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-                logger.info("## 2. executeEventRule with sequenceRuleDto.target");
-
-            }
+        	if (sequenceRuleDto.getTarget()!= null && targetSystem!=null) {
+	            if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
+	                ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+	                logger.info("## 1. executeEventRule with targetSystem");
+	
+	            } else {
+	                ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+	                logger.info("## 2. executeEventRule with sequenceRuleDto.target");
+	
+	            }
+        	} else if (sequenceRuleDto.getTarget()== null && targetSystem != null) {
+        		ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+        	} else if (sequenceRuleDto.getTarget()!= null && targetSystem == null) {
+        		ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        	} else {
+        		return ruleResult;
+        	}
 
         }
 
