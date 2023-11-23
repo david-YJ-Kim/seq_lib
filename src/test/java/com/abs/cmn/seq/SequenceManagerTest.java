@@ -42,7 +42,7 @@ public class SequenceManagerTest {
 
 //        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
         String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLibrary\\src\\main\\resources\\";
-        String sequenceRuleFileName = "SequenceRule-TEST.json";
+        String sequenceRuleFileName = "SequenceRule.json";
         String sequenceRuleFileTestName = "SequenceMessageRuleTest.json";
 //        String sequenceRuleFileName = "SequenceRule.json";
 //        String sequenceRuleFileTestName = "SequenceRuleTest.json";
@@ -73,7 +73,7 @@ public class SequenceManagerTest {
 	        testCase = new HashMap<String,String>();
 	        testCase.put(test.getString(COMMON_CODE.cid.name()), topicResult);
 	        // TODO test.getString("cmsTopic"); 등등의 메세지 제일 아래 값을 같이 넣어줌, 
-	        testCase.put(sourceSystem, test.getString(sourceSystem));
+//	        testCase.put(sourceSystem, test.getString(sourceSystem));
 	        testResult.add(testCase);
 	        
         }
@@ -87,7 +87,7 @@ public class SequenceManagerTest {
         	System.out.printf( "[ "+(cnt+1)+" ]\t");
         	for(String key : map.keySet() ) {        	
 	        	System.out.printf(
-	        			key+" : "+map.get(key)+" / "
+	        			key+" : "+map.get(key)+" \t"
 				);
         	}
         	System.out.println();

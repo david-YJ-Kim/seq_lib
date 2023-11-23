@@ -1,13 +1,15 @@
 package com.abs.cmn.seq;
 
 public enum TEST_CODE {
-//	BRS_TRACK_IN_CNFM_REQ,	// 메시지룰 1	1,2,3 케이스 필요
-//	BRS_TRACK_IN_REQ,		// 메시지룰 2	1,2,3 케이스 필요
-//	WFS_CARR_ID_READ,		// 메시지룰 3	1,2,3 케이스 필요
-//	WFS_CARR_ID_READ_01,
-//	WFS_SLOTMAP_REPORT,		// 메시지룰 4	1,2,3 케이스 필요
-//	WFS_SLOTMAP_REPORT_01,
+	// 메세지 이름 파싱 룰
+	BRS_TRACK_IN_CNFM_REQ,	// 메시지룰 1	1,2,3 케이스 필요
+	BRS_TRACK_IN_REQ,		// 메시지룰 2	1,2,3 케이스 필요
+	WFS_CARR_ID_READ,		// 메시지룰 3	1,2,3 케이스 필요
+	WFS_CARR_ID_READ_01,	// 메시지룰 4
+	WFS_SLOTMAP_REPORT,		// 메시지룰 5	1,2,3 케이스 필요
+	WFS_SLOTMAP_REPORT_01,	// 메시지룰 6
 	
+	// 파싱 룰
     PARSING_MSG_TO_WFS_01,
     PARSING_MSG_TO_WFS_02,
     PARSING_MSG_TO_WFS_03,
@@ -38,16 +40,17 @@ public enum TEST_CODE {
     PARSING_MSG_TO_BRS_13,
     PARSING_MSG_TO_BRS_14,
     
-//    PARSING_MSG_TO_EAP_01,
-//    PARSING_MSG_TO_EAP_02,
-//    
-//    PARSING_MSG_TO_MCS,
-//    PARSING_MSG_TO_FDC,
-//    PARSING_MSG_TO_SPC,
-//    PARSING_MSG_TO_RMS,
-//    PARSING_MSG_TO_RTD,
-//    PARSING_MSG_TO_CRS,
-//    PARSING_MSG_TO_MSS
+    // 공통 룰
+    PARSING_MSG_TO_EAP_01,	
+    PARSING_MSG_TO_EAP_02,
+    
+    PARSING_MSG_TO_MCS,
+    PARSING_MSG_TO_FDC,
+    PARSING_MSG_TO_SPC,
+    PARSING_MSG_TO_RMS,
+    PARSING_MSG_TO_RTD,
+    PARSING_MSG_TO_CRS,
+    PARSING_MSG_TO_MSS
     
     ;
 }
