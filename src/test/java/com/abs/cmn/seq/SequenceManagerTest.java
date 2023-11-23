@@ -31,22 +31,6 @@ enum SOURCE_SYSTEM{
 	OIA	
 }
 
-// 테스트 자동화를 위한 값
-enum RESULT_TOPIC {
-	topic,
-	tstTopic,
-	mcsTopic,
-	rtdTopic,
-	eapTopic,
-    rmsTopic,
-    mssTopic,
-    crsTopic,
-    spcTopic,
-    wfsTopic,
-    brsTopic,
-    oiaTopic
-	;
-}
 
 public class SequenceManagerTest {
 
@@ -74,7 +58,6 @@ public class SequenceManagerTest {
         Map<String,String> testCase = null;
         
         for (TEST_CODE value : TEST_CODE.values()) {
-//        for ( int i =0 ; i < TEST_CODE.values().length ; i ++)
         
 	        test = testObj.getJSONObject(value.name());
 	        
@@ -82,39 +65,6 @@ public class SequenceManagerTest {
 	                                test.getString(COMMON_CODE.tgt.name()), // target 시스템 코드 (e,x) WFS, BRS, RTD, ...)
 	                                test.getString(COMMON_CODE.cid.name()), // 이벤트 명 (ex) WFS_CARR_ID_READ)
 	                                test.getJSONObject(COMMON_CODE.payload.name()).toString() // 메시지 전문
-//	        		"WFS",		
-//	        		"WFS_DSP_WORK_REP",
-//					"{\r\n" + 
-//					"      \"head\": {\r\n" + 
-//					"        \"cid\": \"WFS_DSP_WORK_REP\",\r\n" + 
-//					"        \"tid\": \"202303030000000\",\r\n" + 
-//					"        \"osrc\": \"\",\r\n" + 
-//					"        \"otgt\": \"\",\r\n" + 
-//					"        \"src\": \"RTD\",\r\n" + 
-//					"        \"srcEqp\": \"\",\r\n" + 
-//					"        \"tgt\": \"WFS\",\r\n" + 
-//					"        \"tgtEqp\": \"\"\r\n" + 
-//					"      },\r\n" + 
-//					"      \"body\": {\r\n" + 
-//					"        \"siteId\": \"SVM\",\r\n" + 
-//					"        \"dspType\": \"LOT\",\r\n" + 
-//					"        \"lotId\": \"LOT_230327005\",\r\n" + 
-//					"	\"lot\":[\r\n" + 
-//					"	  {\"carrId\": \"CAA00128\"},\r\n" + 
-//					"          {\"LotId\": \"LOT_230327005\"},\r\n" + 
-//					"	  { \"eqpId\": \"AP-TG-01T\" }\r\n" + 
-//					"	],\r\n" + 
-//					"        \"eqpId\": \"AP-TG-01T\",\r\n" + 
-//					"        \"portId\": \"AP-TG-01_IP01,AP-TG-01_OP01\",\r\n" + 
-//					"        \"carrId\": \"\",\r\n" + 
-//					"        \"prodDefId\": \"\",\r\n" + 
-//					"        \"procDefId\": \"\",\r\n" + 
-//					"        \"rsltCm\": \"\",\r\n" + 
-//					"        \"rsnCd\": \"PASS\",\r\n" + 
-//					"        \"evntCm\": \"\",\r\n" + 
-//					"        \"evntUserId\": \"WFS\"\r\n" + 
-//					"      }\r\n" + 
-//					"}"
 					);
 	        
 	        System.out.println(
@@ -122,18 +72,25 @@ public class SequenceManagerTest {
 	        );
 	        testCase = new HashMap<String,String>();
 	        testCase.put(test.getString(COMMON_CODE.cid.name()), topicResult);
+	        // TODO test.getString("cmsTopic"); 등등의 메세지 제일 아래 값을 같이 넣어줌, 
+	        testCase.put(sourceSystem, test.getString(sourceSystem));
 	        testResult.add(testCase);
 	        
         }
+        
         System.out.println("**"+sourceSystem);
+        
+        // 현재 파싱 결과 값 & 해당 SOURCE 일 때 예상 결과값 같이 출력됨
+        // 사전에 Message 폼에는 정상적인 룰로 돌린 Topic 값들을 넣어주어야 함. 그럼 추후 결과값으로 true false 확인 가능 .
         int cnt = 0;
         for ( Map<String, String> map :  testResult ) {
+        	System.out.printf( "[ "+(cnt+1)+" ]\t");
         	for(String key : map.keySet() ) {        	
-	        	System.out.println(
-	        			"[ "+(cnt+1)+" ]"+
-	        			key+" : "+map.get(key)
+	        	System.out.printf(
+	        			key+" : "+map.get(key)+" / "
 				);
         	}
+        	System.out.println();
         	cnt++;
         }
         
