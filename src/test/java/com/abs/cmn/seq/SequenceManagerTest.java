@@ -41,8 +41,10 @@ public class SequenceManagerTest {
         String env = "DEV"; // Property
 
 //        String ruleFilesPath = "C:\\Workspace\\abs\\cmn\\seq-library\\src\\main\\resources\\";
-        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLibrary\\src\\main\\resources\\";
-        String sequenceRuleFileName = "SequenceRule.json";
+//        String ruleFilesPath = "D:\\work-spaces\\work-space-3.9.11\\SEQLibrary\\src\\main\\resources\\";
+        String ruleFilesPath = "D:\\work-spaces\\new-git-storage\\seq\\src\\main\\resources\\";
+        
+        String sequenceRuleFileName = "SequenceRule-TEST.json";
         String sequenceRuleFileTestName = "SequenceMessageRuleTest.json";
 //        String sequenceRuleFileName = "SequenceRule.json";
 //        String sequenceRuleFileTestName = "SequenceRuleTest.json";
@@ -73,7 +75,8 @@ public class SequenceManagerTest {
 	        testCase = new HashMap<String,String>();
 	        testCase.put(test.getString(COMMON_CODE.cid.name()), topicResult);
 	        // TODO test.getString("cmsTopic"); 등등의 메세지 제일 아래 값을 같이 넣어줌, 
-//	        testCase.put(sourceSystem, test.getString(sourceSystem));
+//	        testCase.put(sourceSystem.toLowerCase(), test.getString(sourceSystem).toLowerCase());
+//	        testCase.put("result" , test.getString(sourceSystem).toLowerCase()==topicResult?"true":"false");
 	        testResult.add(testCase);
 	        
         }

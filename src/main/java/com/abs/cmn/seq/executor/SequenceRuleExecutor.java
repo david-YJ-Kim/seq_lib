@@ -46,42 +46,58 @@ public class SequenceRuleExecutor {
     	log.info("@@ executeEventRule key : "+key);
     	
         // 큐 타입 설정
-    	if (type != null) {
+    	if ( type != null && type.length() > 0) {
+    		log.info("## executeEventRule() ---- 1 log type not null  : " +ruleDto.getType());
 			topicVal = type.concat("/");
-			log.info("## executeEventRule ---- log set type : " +topicVal);
-		}else{
-			// 큐 타입 미등록 시, CMN 으로 리턴
-			topicVal = SeqCommonCode.CMN.name().concat("/");
-		};
+			log.info("## executeEventRule() ---- 1-1 log set type : " +topicVal);
+		}else {
+			if ( ruleDto.getParsingItem()!= null ) {
+				log.info("## executeEventRule() ---- 2 log type null  parsingItem: " +ruleDto.getParsingItem());
+				topicVal = parseFromParsingItemName(ruleDto.getParsingItem()).concat("/");
+				log.info("## executeEventRule() ---- 2-2 log set type : " +topicVal);
+			}else {
+				// 큐 타입 미등록 시, CMN 으로 리턴
+				topicVal = SeqCommonCode.CMN.name().concat("/");
+				log.info("## executeEventRule() ---- 3 log set type : " +topicVal);
+			};
+			
+		} 
+			
+		//TYPE 이 없을 때에는 parsingItem에서 가져온다. <<<< !!!!! 
     	
 		// 큐 키 설정
-        if (key != null) {
+		if (key != null) {
         	
         	log.info("## 1 . executeEventRule with key. ");
         	
-	        if(SeqCommonCode.EQP.equals(type)) {
+	        if(SeqCommonCode.EQP.name().equals(type)) {
 	        	
-	            topicVal += this.convertEqpIdintoAsciiValue(key);
-	            log.info("## 2-1 . executeEventRule EQP parsing. ");
+	        	if ( ruleDto.getPosition() == null ) {
+		            topicVal += this.convertEqpIdintoAsciiValue(key);
+		            log.info("## 2-1 . executeEventRule EQP parsing. / postion null");
+	        	} else {
+	        		topicVal += this.convertIdintoAsciiValue(key, ruleDto.getPosition());
+		            log.info("## 2-1 . executeEventRule EQP parsing. / postion : "+ruleDto.getPosition());
+	        	}
 	            
 	        } else {
 	            // TODO CARR, LOT, CMN인 경우 대응
 	            // 2.4.1. ⑥ Item Name가 EQP가 아닌 경우
 	            // Position으로 입력된 자리수에서 2자리를 파싱(없으면 끝에서 2자리) 하여 숫자 변환 후 20으로 나눈 나머지 값
 	        	
-	        	String position = "";
+	        	String position = ruleDto.getPosition();
 	        	
 	        	log.info("## 2-2 executeEventRule Not EQP . ");
       	
 				// 포지션 등록 OK
-	        	if ( ruleDto.getPosition() != null ) {
+	        	if ( position != null && position.length() > 1 ) {
 	        		
-	        		log.info("## executeEventRule type position parsing. ");	        		
-	    			topicVal += parsePosFromParsingItem(key, Integer.valueOf( ruleDto.getPosition())-1 );
+	        		log.info("## executeEventRule type position parsing. ");
+	    			topicVal += convertIdintoAsciiValue(key, ruleDto.getPosition() );
 	    			log.info("@@ executeEventRule topicVal : "+topicVal);
-	    			
-	    			// 포지션이 4글자 이상 일 때, 
-	    		} else if (ruleDto.getPosition() != null && ruleDto.getPosition().length() < 2){
+    			
+	    		// 포지션이 4글자 이상 일 때, 
+	    		} else if ( position != null && position.length() < 2){
 	    			
 	    			log.info("## executeEventRule type position parsing. ");
 	    			topicVal += parsePosFromParsingItem(key, Integer.valueOf( ruleDto.getPosition())-1 );
@@ -156,7 +172,8 @@ public class SequenceRuleExecutor {
             		
     				log.info(">> 34-2. No Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
 					key = bodyObj.getString(ruleDto.getParsingItem());
-
+					
+					log.info(">> 34-2-1. keym : "+key);
 	            // 룰에 파싱 아이템이 아예 없는 경우 continue ; 다 돌고 common 으로 끝
 	            } else {
 					log.info(" >> 34-3. No Item defined : " + i);	            	
@@ -165,7 +182,7 @@ public class SequenceRuleExecutor {
             		
 	            		            	
             	// item 값이 "" 이거나 null 인 경우!! 체크
-				if (  key == null || key.contentEquals("") || !Character.isDigit( key.charAt(key.length()-1)) ) {
+				if (  key == null || key.contentEquals("") ) {
 					log.info(" >> 35-1. No values in item name key : " + i);	    
 					continue;
 				} else {
@@ -250,7 +267,7 @@ public class SequenceRuleExecutor {
 
         log.info("## executeEventRule val : "+val);
         
-        return String.format("%02d", String.valueOf(val));
+        return String.format("%02d", val);
 
     }
     
@@ -297,24 +314,27 @@ public class SequenceRuleExecutor {
     		String originPosValue = "";
 			int res = 0;
 			
-			if ( position < key.length()-1) {
-    			log.info("## itemValue substring (return) "+key.substring(position, position+2));
-    		// 2자리를 자른다. 
-    			originPosValue = key.substring(position, position+2);
-    			if ( Character.isDigit( originPosValue.charAt( originPosValue.length()-1 ) )) {
-    				res = Integer.valueOf(originPosValue) % maxQueueSize;
-    				log.info("## res :: "+res);
-    			} else if ( Character.isDigit( originPosValue.charAt( originPosValue.length()-2 ))
-    					&& Character.isDigit( originPosValue.charAt( originPosValue.length()-1 ))
-    					) {
-    				return parsePosFromParsingItem(key,key.length()-2);
-    			}
-    		} else {
+//			if ( position > key.length()-1) {
+//    			log.info("## itemValue substring 1 (return) "+key.substring(position-1, position+1));
+//    		// 2자리를 자른다. 
+//    			originPosValue = key.substring(position-1, position+1);
+//    			log.info("## itemValue substring 2 (return) "+Integer.valueOf(originPosValue));
+//    			if ( Character.isDigit( originPosValue.charAt( originPosValue.length()-1 ) )) {
+//    				res = Integer.valueOf(originPosValue) % maxQueueSize;
+//    				log.info("## res :: "+res);
+//    			} else if ( Character.isDigit( originPosValue.charAt( originPosValue.length()-2 ))
+//    					&& Character.isDigit( originPosValue.charAt( originPosValue.length()-1 ))
+//    					) {
+//    				return parsePosFromParsingItem(key,key.length()-2);
+//    			}
+//    		} else {
     			log.info("@@ parsePosFromParsingItem(), position:{} , key.length():{} ", position, key.length());
-    			position = key.length()-2;
+    			log.info("@@ parsePosFromParsingItem(), position:{} , key.length():{} ", position, key.substring(position, position+2));
+//    			position = key.length()-2;
     			originPosValue = key.substring(position, position+2);
+    			log.info("## originPosValue :: "+originPosValue);
     			res = Integer.valueOf(originPosValue) % maxQueueSize;
-    		}
+//    		}
 
 			return String.format("%02d", res);
 
@@ -328,14 +348,13 @@ public class SequenceRuleExecutor {
     	
     	if ( parsItemName.substring(0).equals("c") ) {
     		
-    		id = parsItemName.substring(0, 3).toUpperCase();
+    		id = parsItemName.substring(0, 4).toUpperCase();
     	
+    		log.info("## parseFromParsingItemName() 1. id : "+ id); 
     	} else {
-    		
-    		id = parsItemName.substring(0, 2).toUpperCase();
-    		
-    		if ( !id.equals("LOT") && !id.equals("EQP") ) id = "CMM";
-    		
+    		id = parsItemName.substring(0, 3).toUpperCase();
+//    		log.info("## parseFromParsingItemName() 2. id : "+ id);
+    		if ( !id.equals(SeqCommonCode.EQP.name()) && !id.equals(SeqCommonCode.LOT.name()) ) id = "CMM";
     	}
 
     	return id;

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.abs.cmn.seq.checker.EventRuleChecker;
 import com.abs.cmn.seq.checker.ParsingRuleChecker;
+import com.abs.cmn.seq.code.PayloadCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
 import com.abs.cmn.seq.code.SystemNameList;
 import com.abs.cmn.seq.dto.SequenceRuleDto;
@@ -115,14 +116,38 @@ public final class SequenceManager {
     public String getTargetName(String targetSystem, String eventName, String payload){
         // topic Header = SVM/DEV/
     	String topicName;
-        String topicVal;
+    	String topicVal = null;
+    	
+    	logger.info("@@ -getTargetName()- params : targetSystem : "+ targetSystem);
+    	logger.info("@@ -getTargetName()- params : eventName : "+ eventName);
+    	logger.info("@@ -getTargetName()- params : payload : "+ payload);
+    	
+    	String parsTargetAp = parameterValidation(targetSystem, eventName, new JSONObject(payload) );
 
-        logger.info("@@ -- params : payload : "+ payload);
+        logger.info("@@ No Insert TargetSystem. Parsing from header -  parsTargetAp : "+ parsTargetAp);
+        
+        if ( parsTargetAp!=null && parsTargetAp.length() == 3 )			// targetSystem 없을 때, 
+        	targetSystem = parsTargetAp;
+        else if ( parsTargetAp!=null && parsTargetAp.length() > 3 )		// payload와 targetSystem이 없을 때, 
+        	return this.topicHeader+parsTargetAp;
+        else
+        	logger.info("@@ -- params : parsTargetAp is null - "+ parsTargetAp);
+        
+        logger.info("## @@@ -- targetSyste : "+targetSystem);
+        
         // 1. EventRuleChecker
         String checkEventRuleResult = this.checkEventRule(targetSystem, eventName, payload);
+        logger.info("** checkEventRuleResult : "+checkEventRuleResult);
+        
         if(checkEventRuleResult != null){
              // EAP +
-            topicVal = targetSystem + checkEventRuleResult;
+            if ( checkEventRuleResult.length() > 7 ) {
+            	topicVal = checkEventRuleResult;
+            	logger.info("1 ---------------------- checkEventRuleResult : "+topicVal);
+            } else {
+            	topicVal = targetSystem + checkEventRuleResult;
+            	logger.info("2 ---------------------- checkEventRuleResult : "+topicVal);
+            }
 
         }else{
 
@@ -148,7 +173,7 @@ public final class SequenceManager {
                     break;
                 default:
                     // TODO targetSystem이 없는 경우는..?
-                    topicVal = "ERR" + SequenceManageUtil.getCommonDefaultTopic();
+                	topicVal = this.getTargetNameFromHeader(new JSONObject(payload)) + SequenceManageUtil.getCommonDefaultTopic();
                     break;
 
             }
@@ -174,31 +199,45 @@ public final class SequenceManager {
 
         // 1. EventRuleChecker
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
+//        logger.info("after get Event rule "+sequenceRuleDto.toString());
         if(sequenceRuleDto != null){
 
         	logger.info("@@ -- checkEventRule : sequenceRuleDto : not null , "+ sequenceRuleDto.toString());
             // 룰에 등록된 Target과 요청 받은 Target이 동일한지 확인
             // 서로 다를 경우, 룰에 등록된 타켓 정보를 우선으로 분배
         	if (sequenceRuleDto.getTarget()!= null && targetSystem!=null) {
-	            if ( sequenceRuleDto.getTarget().compareTo(targetSystem) < 1) {
+        		if ( sequenceRuleDto.getTarget().equals(targetSystem)) {
+        			logger.info("## 1. executeEventRule with targetSystem");
 	                ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
-	                logger.info("## 1. executeEventRule with targetSystem");
 	
 	            } else {
-	                ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-	                logger.info("## 2. executeEventRule with sequenceRuleDto.target");
+	                logger.info("## 2. executeEventRule with sequenceRuleDto.target : "+sequenceRuleDto.getTarget());
+	                ruleResult = sequenceRuleDto.getTarget();
+	                ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
 	
 	            }
         	} else if (sequenceRuleDto.getTarget()== null && targetSystem != null) {
         		ruleResult = this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+        		logger.info("## 3. return ruleResult : "+ruleResult );
         	} else if (sequenceRuleDto.getTarget()!= null && targetSystem == null) {
-        		ruleResult = this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        		
+        		ruleResult = "/"+sequenceRuleDto.getTarget();
+        		logger.info("## 4. return ruleResult : "+ruleResult );
+        		ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        		logger.info("## 5. return ruleResult : "+ruleResult );
         	} else {
-        		return ruleResult;
+        		String tgt = this.getTargetNameFromHeader(new JSONObject(payload));
+        		ruleResult = this.ruleExecutor.executeEventRule(tgt, eventName, new JSONObject(payload), sequenceRuleDto);
+        		logger.info("## 6. return ruleResult : "+ruleResult );
         	}
 
+        	logger.info("##  rule Dto not null - path :: return ruleResult : "+ruleResult );
+        } else {
+        	logger.info("after get Event rule params , targetSystem : "+targetSystem);
+        	logger.info("after get Event rule params , eventName : "+eventName);
+        	logger.info("after get Event rule params , payload : "+payload);
         }
-
+        
         // $큐타입/$큐 키
         return ruleResult;
     }
@@ -254,7 +293,39 @@ public final class SequenceManager {
         // TODO Rule File 갱신 파일 생성
     };
 
+    private String getTargetNameFromHeader(JSONObject payload) {
+    	logger.info("payload.getJSONObject( PayloadCommonCode.head.name()) : "+payload.getJSONObject( PayloadCommonCode.head.name()));
+    	JSONObject header = payload.getJSONObject( PayloadCommonCode.head.name());
+    	logger.info("-- get Target : "+header.getString(PayloadCommonCode.tgt.name()));
+    	return header.getString(PayloadCommonCode.tgt.name());
+    }
     
+    private String parameterValidation(String targetSystem, String cid, JSONObject payload) {
+    	logger.info("parameterValidation() in targetSystem = "+targetSystem);
+    	logger.info("parameterValidation() in cid = "+cid);
+    	logger.info("parameterValidation() in payload = "+payload);
+    	
+    	String parsTarget = "";
+    	
+		// 문이 없기 때문에 CMN/00을 return 하여
+    	if ( targetSystem == null || targetSystem.equals("") ) {
+    		logger.info("## 1. targetSystem null ");
+    		if ( payload == null ) {
+    			parsTarget = SequenceManageUtil.getCommonDefaultTopic().substring(1);
+    			logger.info("## 2. targetSystem null && payload null ");
+    		} else { 
+    			parsTarget = this.getTargetNameFromHeader(payload);
+    			logger.info("## 2-1. targetSystem null && payload not null ");
+    		}
+    	} else {
+    		logger.info("## 3. targetSystem not null ");
+    		parsTarget = null;
+    	}
+    	logger.info("## 4. return parsTarget : "+ parsTarget);
+    	// 모든 인자가 있으면, null을 return 한다. 
+    	return parsTarget;
+    	
+    }
 
 
     @Override
