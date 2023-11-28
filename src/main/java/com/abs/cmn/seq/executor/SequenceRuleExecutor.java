@@ -31,15 +31,25 @@ public class SequenceRuleExecutor {
 
     public String executeEventRule(String targetName, String eventName, JSONObject payload, SequenceRuleDto ruleDto){
 
-    	log.info("## executeEventRule param targetName : "+targetName);
-    	log.info("## executeEventRule param eventName : "+eventName);
-    	log.info("## executeEventRule param payload : "+payload);
-    	log.info("## executeEventRule param ruleDto : "+ruleDto.toString());
-    	
+    	log.info("## executeEventRule param targetName : {}, eventName: {}, "+targetName, eventName);
+    	log.info("## executeEventRule param payload : {} , ruleDto : {}"+payload.toString(), ruleDto.toString());
     	
         String topicVal = null;//targetName.concat("/");
-        String type = ruleDto.getType();
-        String key = payload.getJSONObject(PayloadCommonCode.body.name()).getString(ruleDto.getParsingItem());
+        String type = null;
+        String key = null;
+
+        // type 이 null 이면 parsing item 에서 값을 가져옴 
+        if ( ruleDto.getType() == null ) type = parseFromParsingItemName(ruleDto.getParsingItem());
+        else type = ruleDto.getParsingItem();
+        
+        // Parsing Item 에 Depth가 있을 경우, 
+        if(ruleDto.getParsingItem().indexOf("/") != -1){
+    		log.info(">> Depth parsing item : "+ruleDto.getParsingItem());
+			key = parseParsingItemDepth(ruleDto.getParsingItem(), payload.getJSONObject(PayloadCommonCode.body.name()));
+        } else {
+            key = payload.getJSONObject(PayloadCommonCode.body.name()).getString(ruleDto.getParsingItem());
+        }
+        
         // TODO parsingItem이 payload-body에 없는 경우
         log.info("@@ executeEventRule Parsing item : "+ruleDto.getParsingItem());
         log.info("@@ executeEventRule type : "+type);
@@ -62,8 +72,6 @@ public class SequenceRuleExecutor {
 			};
 			
 		} 
-			
-		//TYPE 이 없을 때에는 parsingItem에서 가져온다. <<<< !!!!! 
     	
 		// 큐 키 설정
 		if (key != null) {
@@ -73,7 +81,8 @@ public class SequenceRuleExecutor {
 	        if(SeqCommonCode.EQP.name().equals(type)) {
 	        	
 	        	if ( ruleDto.getPosition() == null ) {
-		            topicVal += this.convertEqpIdintoAsciiValue(key);
+	        		// TODO - EQP ID 일 때, postion 이 null 이면, 가장 뒤에 2자리를 파싱
+		            topicVal += this.parsePosFromParsingItem(key, Integer.valueOf( ruleDto.getPosition())-1);
 		            log.info("## 2-1 . executeEventRule EQP parsing. / postion null");
 	        	} else {
 	        		topicVal += this.convertIdintoAsciiValue(key, ruleDto.getPosition());
