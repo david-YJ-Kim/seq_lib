@@ -122,16 +122,12 @@ public final class SequenceManager {
     	logger.info("@@ -getTargetName()- params : eventName : "+ eventName);
     	logger.info("@@ -getTargetName()- params : payload : "+ payload);
     	
-    	String parsTargetAp = parameterValidation(targetSystem, eventName, new JSONObject(payload) );
-
-        logger.info("@@ No Insert TargetSystem. Parsing from header -  parsTargetAp : "+ parsTargetAp);
-        
-        if ( parsTargetAp!=null && parsTargetAp.length() == 3 )			// targetSystem 없을 때, 
-        	targetSystem = parsTargetAp;
-        else if ( parsTargetAp!=null && parsTargetAp.length() > 3 )		// payload와 targetSystem이 없을 때, 
-        	return this.topicHeader+parsTargetAp;
-        else
-        	logger.info("@@ -- params : parsTargetAp is null - "+ parsTargetAp);
+    	/**
+    	 * Validation if payload , targetSystem , eventName
+    	 **/ 
+    	if ( payload == null ) return this.topicHeader+SequenceManageUtil.getCommonDefaultTopic().substring(1); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
+    	else if (targetSystem == null) targetSystem = getTargetNameFromHeader(new JSONObject(payload));
+    	else if (eventName == null ) eventName = getMessageNameFromHeader(new JSONObject(payload));
         
         logger.info("## @@@ -- targetSyste : "+targetSystem);
         
@@ -300,30 +296,15 @@ public final class SequenceManager {
     	return header.getString(PayloadCommonCode.tgt.name());
     }
     
-    private String parameterValidation(String targetSystem, String cid, JSONObject payload) {
-    	logger.info("parameterValidation() in targetSystem = "+targetSystem);
-    	logger.info("parameterValidation() in cid = "+cid);
-    	logger.info("parameterValidation() in payload = "+payload);
-    	
-    	String parsTarget = "";
-    	
-		// 문이 없기 때문에 CMN/00을 return 하여
-    	if ( targetSystem == null || targetSystem.equals("") ) {
-    		logger.info("## 1. targetSystem null ");
-    		if ( payload == null ) {
-    			parsTarget = SequenceManageUtil.getCommonDefaultTopic().substring(1);
-    			logger.info("## 2. targetSystem null && payload null ");
-    		} else { 
-    			parsTarget = this.getTargetNameFromHeader(payload);
-    			logger.info("## 2-1. targetSystem null && payload not null ");
-    		}
-    	} else {
-    		logger.info("## 3. targetSystem not null ");
-    		parsTarget = null;
-    	}
-    	logger.info("## 4. return parsTarget : "+ parsTarget);
-    	// 모든 인자가 있으면, null을 return 한다. 
-    	return parsTarget;
+    private String getMessageNameFromHeader(JSONObject payload) {
+    	logger.info("payload.getJSONObject( PayloadCommonCode.head.name()) : "+payload.getJSONObject( PayloadCommonCode.head.name()));
+    	JSONObject header ;
+    	if ( payload.length() != 0 ) {
+	    	header = payload.getJSONObject( PayloadCommonCode.head.name());
+	    	logger.info("-- get Target : "+header.getString(PayloadCommonCode.cid.name()));
+	    	return header.getString(PayloadCommonCode.cid.name());
+    	} else 
+    		return "";
     	
     }
 
