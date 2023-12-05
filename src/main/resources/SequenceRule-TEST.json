@@ -587,18 +587,23 @@
         },
         {
           "parsingItem": "eqpId",
-          "position": null,
+          "position": 7,
           "type": "EQP"
         },
         {
           "parsingItem": "lotId",
-          "position": 7,
+          "position": 8,
           "type": "LOT"
         },
         {
           "parsingItem": "lotList/lotId",
           "position": 7,
           "type": "LOT"
+        },
+        {
+          "parsingItem": "consumId",
+          "position": null,
+          "type": "CMN"
         }
       ],
       "BRS": [
@@ -645,7 +650,7 @@
         "eventName": "BRS_TRACK_IN_CNFM_REQ",
         "parsingItem": "eqpId",
         "position": "2,4,5,8",
-        "type": "",
+        "type": null,
         "target": "BRS"
       },
       {
@@ -682,7 +687,7 @@
         "eventName": "WFS_SLOTMAP_REPORT_01",
         "parsingItem": "lotId",
         "position": null,
-        "type": "EQP",
+        "type": "LOT",
         "target": "BRS"
       }
     ]

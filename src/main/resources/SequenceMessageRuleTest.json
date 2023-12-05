@@ -42,7 +42,7 @@
       }
     },
     "type": "EQP",
-    "topic": "SMV/DEV/BRS/EQP/15"
+    "topic": "SMV/DEV/WFS/EQP/15"
   },  
   "BRS_TRACK_IN_REQ":{
   	"cid": "BRS_TRACK_IN_REQ",
@@ -555,10 +555,9 @@
 	    "tgtEqp": null
 	  },
 	  "body": {
-      	"postion": 8,
 	    "siteId": "SVM",
 	    "lotId": "LOT00012P01",
-	    "eqpId": "AP-TG-01",
+	    "eqpId": "",
 	    "portId": "AP-TG-01_IP01",
 	    "carrId": "",
 	    "workId": null,
