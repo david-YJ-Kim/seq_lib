@@ -24,15 +24,16 @@ public class SequenceRuleDto {
 
     public SequenceRuleDto(JSONObject jsonObject){
         this(
-                jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
-                (String) jsonObject.get(SeqCommonCode.parsingItem.name()),                
-                jsonObject.isNull(SeqCommonCode.position.name()) ? null : String.valueOf(jsonObject.get(SeqCommonCode.position.name())),                
-                (String) jsonObject.get(SeqCommonCode.type.name()),
-                jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
+            jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
+            (String) jsonObject.get(SeqCommonCode.parsingItem.name()),                
+            jsonObject.isNull(SeqCommonCode.position.name()) ? null : String.valueOf(jsonObject.get(SeqCommonCode.position.name())),                
+            jsonObject.isNull(SeqCommonCode.type.name())? null: String.valueOf( jsonObject.get(SeqCommonCode.type.name())),
+            jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
                 		
         );
-
+ 
     }
+     
 
     
 
