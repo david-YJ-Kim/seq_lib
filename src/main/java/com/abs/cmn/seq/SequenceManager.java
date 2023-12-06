@@ -151,20 +151,9 @@ public final class SequenceManager {
                     topicVal = targetSystem + getTopicNameForEAP(this.sourceSystem, targetSystem, eventName, payload);
                     break;
 
-                case SystemNameList.MCS:
-                case SystemNameList.FDC:
-                case SystemNameList.SPC:
-                case SystemNameList.RMS:
-                case SystemNameList.RTD:
-                case SystemNameList.MSS:
-                case SystemNameList.CRS:
-                case SystemNameList.WFS:
-                case SystemNameList.BRS:
-                    topicVal = targetSystem + this.getTopicNameForParsingRule(targetSystem, eventName, payload);
-                    break;
                 default:
                     // TODO targetSystem이 없는 경우는..?
-                	topicVal = this.getTargetNameFromHeader(new JSONObject(payload)) + SequenceManageUtil.getCommonDefaultTopic();
+                	topicVal = this.getTopicNameForParsingRule(targetSystem, eventName, payload);
                     break;
 
             }
@@ -184,7 +173,7 @@ public final class SequenceManager {
 
 
     }
-
+    
     private String checkEventRule(String targetSystem, String eventName, String payload){
         String ruleResult = null;
         // 1. EventRuleChecker
@@ -198,10 +187,10 @@ public final class SequenceManager {
         	
         	if ( targetSystem != null ) {
         		
-        		if ( sequenceRuleDto.getTarget() != null ) {
+        		if ( sequenceRuleDto.getModifiedTarget() != null ) {
         			logger.info("## 1. MessageNameRuleCheck , targetSystem O , ruleTarget O ");
-        			ruleResult = sequenceRuleDto.getTarget();
-        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        			ruleResult = sequenceRuleDto.getModifiedTarget();
+        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getModifiedTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
         		} else {
         			logger.info("## 1. MessageNameRuleCheck , targetSystem O , ruleTarget X ");
         			ruleResult = targetSystem;
@@ -211,9 +200,9 @@ public final class SequenceManager {
         	} else {
         		String tgt = this.getTargetNameFromHeader(new JSONObject(payload));
         		
-        		if ( sequenceRuleDto.getTarget() != null ) {
-        			ruleResult = sequenceRuleDto.getTarget();
-        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
+        		if ( sequenceRuleDto.getModifiedTarget() != null ) {
+        			ruleResult = sequenceRuleDto.getModifiedTarget();
+        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getModifiedTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
         		} else {
         			ruleResult = targetSystem;
         			ruleResult += this.ruleExecutor.executeEventRule(tgt, eventName, new JSONObject(payload), sequenceRuleDto);
@@ -254,7 +243,7 @@ public final class SequenceManager {
             logger.info("## 4. executeParsingRule without ruleDtoArrayList");
         }
 
-        return "/" + ruleResult;
+        return ruleResult;
 
     }
 

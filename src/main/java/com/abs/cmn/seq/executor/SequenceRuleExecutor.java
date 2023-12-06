@@ -38,6 +38,7 @@ public class SequenceRuleExecutor {
         if ( ruleDto.getType() != null && ruleDto.getType().length() > 0 )
         	type = ruleDto.getType();
         else type = parseFromParsingItemName(ruleDto.getParsingItem());
+        
         // Parsing Item 에 Depth가 있을 경우와 없을 경우, key 값을 가져옴. 
         if(ruleDto.getParsingItem().indexOf("/") != -1){
     		log.info(">> Depth parsing item : "+ruleDto.getParsingItem());
@@ -96,75 +97,94 @@ public class SequenceRuleExecutor {
         int i = 0;
         for(SequenceRuleDto ruleDto : ruleDtoArray){
         	i++;
-        	topicVal = null;
-//        	Set<String> duplicateKeyCheck = fiindDuplicateKeys(bodyObj);
-        	
         	// 룰에 등록된 타겟은 Modified Target으로 인지 Modified 일 때의 룰 수행으로 변경
-            if( ruleDto.getTarget() != null && !ruleDto.getTarget().equals(targetSystem)) {
-            	log.info(">> 36. executeParsingRule - targetSystem : CMN : " + i);
-                return this.basicSequenceRule();
-			// 룰 타겟 AP 와  입력된 송신 대상 타겟 시스템이 같다 
+        	topicVal = checkTargetSystem(ruleDto, targetSystem)+"/";
+//        	Set<String> duplicateKeyCheck = fiindDuplicateKeys(bodyObj);
+        	log.info("+++++++++++++++++ topicVal : "+topicVal);
+        	log.info(">> 33. check getParsingItem : "+i+" : "+ruleDto.getParsingItem());
+        	String key = "";
+            String position = "";       
+            /**
+             * 1. 파싱 아이템에 Depth 가 있는지 확인  하여 key 변수에 item 값 설정
+             *  Depth 가 있다면, Depth 파싱 하여 item 값을 읽어옴.
+             *  Depth가 없다면, 바로 아이템 값을 읽어옴 
+        	 **/
+        	if(ruleDto.getParsingItem().indexOf("/") != -1){
+        		log.info(">> 34-1. Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
+				key = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
+				// 뎁스 아이템 return이 null 이면, 다음 루프 진행 
+				if ( key == null ) continue;
+			// Depth 없는 파싱 아이템이 있는 경우 (1)
+        	} else if( !bodyObj.isNull(ruleDto.getParsingItem()) ){
+				log.info(">> 34-2. No Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
+				key = bodyObj.getString(ruleDto.getParsingItem());
+				log.info(">> 34-2-1. keym : "+key);
+            // 룰에 파싱 아이템이 아예 없는 경우 continue ; 다 돌고 common 으로 끝
             } else {
- 
-            	log.info(">> 33. check getParsingItem : "+i+" : "+ruleDto.getParsingItem());
-            	String key = "";
-                String position = "";       
-                /**
-                 * 1. 파싱 아이템에 Depth 가 있는지 확인  하여 key 변수에 item 값 설정
-                 *  Depth 가 있다면, Depth 파싱 하여 item 값을 읽어옴.
-                 *  Depth가 없다면, 바로 아이템 값을 읽어옴 
-            	 **/
-            	if(ruleDto.getParsingItem().indexOf("/") != -1){
-            		log.info(">> 34-1. Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
-    				key = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
-    				// 뎁스 아이템 return이 null 이면, 다음 루프 진행 
-    				if ( key == null ) continue;
-				// Depth 없는 파싱 아이템이 있는 경우 (1)
-            	} else if( !bodyObj.isNull(ruleDto.getParsingItem()) ){
-    				log.info(">> 34-2. No Depth parsing item : "+i+" : "+ruleDto.getParsingItem());
-					key = bodyObj.getString(ruleDto.getParsingItem());
-					log.info(">> 34-2-1. keym : "+key);
-	            // 룰에 파싱 아이템이 아예 없는 경우 continue ; 다 돌고 common 으로 끝
-	            } else {
-					log.info(" >> 34-3. No Item defined : " + i);	            	
-					continue;
-	            }
+				log.info(" >> 34-3. No Item defined : " + i);	            	
+				continue;
+            }
 
-            	/**
-                 * 2. 아이템 값이 null 이더나 없는 경우는 다음 룰로, 
-                 *  아이템 값이 있는 경우, Position 설정에 따라 파싱 값 가져옴
-            	 **/
-				if (  key == null || key.contentEquals("") ) {
-					log.info(" >> 35-1. No values in item name key : " + i);	    
-					continue;
-				} else {
-					log.info(" >> 35-2. parsing key values : " + i);	    
-					// 4 단계 파싱
-					topicVal = getTypeIdParsingRule(ruleDto, key);
-					/**
-                	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
-                	 * > ItemName( := type ) check 4 depth
-                	 **/	     
-					if ( ruleDto.getPosition() != null ) {
-	                	position = ruleDto.getPosition();
-	                	log.info("################################# rule : "+ruleDto.toString());
-	                	if ( position.length() < 2 && (Integer.valueOf(position)-1) < key.length()-1 )
-	                		return topicVal.concat(parsePosFromParsingItem(key, Integer.valueOf(position)));
-	                	else if ( position.length() < 2 && (Integer.valueOf(position)-1) >= key.length()-1 )
-	                		return topicVal.concat(parsePosFromParsingItem(key, key.length()-1));
-	                	else
-	                		return topicVal.concat(convertIdintoAsciiValue(key, position));
-	                } else {
-	                	log.info("################################# rule : "+ruleDto.toString());
-	                	return topicVal.concat(parsePosFromParsingItem(key,key.length()-1));
-	                }
-				}
-            }	
+        	/**
+             * 2. 아이템 값이 null 이더나 없는 경우는 다음 룰로, 
+             *  아이템 값이 있는 경우, Position 설정에 따라 파싱 값 가져옴
+        	 **/
+			if (  key == null || key.contentEquals("") ) {
+				log.info("+++++++++++++++++ @ topicVal : "+topicVal);
+				log.info(" >> 35-1. No values in item name key : " + i);	    
+				continue;
+			} else {
+				log.info(" >> 35-2. parsing key values : " + i);	    
+				// 4 단계 파싱
+				topicVal += getTypeIdParsingRule(ruleDto, key);
+				log.info("+++++++++++++++++ @@ topicVal : "+topicVal);
+				/**
+            	 * 2.3.2 해당 Record의 ⑤ Position, ⑥ Item Name 으로 처리 
+            	 * > ItemName( := type ) check 4 depth
+            	 **/	     
+				if ( ruleDto.getPosition() != null ) {
+                	position = ruleDto.getPosition();
+                	log.info("################################# rule : "+ruleDto.toString());
+                	if ( position.length() < 2 && (Integer.valueOf(position)-1) < key.length()-1 )
+                		return topicVal += parsePosFromParsingItem(key, Integer.valueOf(position));
+                	else if ( position.length() < 2 && (Integer.valueOf(position)-1) >= key.length()-1 )
+                		return topicVal += parsePosFromParsingItem(key, key.length()-1);
+                	else
+                		return topicVal += convertIdintoAsciiValue(key, position);
+                } else {
+                	log.info("################################# rule : "+ruleDto.toString());
+                	return topicVal += parsePosFromParsingItem(key,key.length()-1);
+                }
+			}
         }
         
         // Parsing Item 값이 존재하지 않으면, targetSystem + CMN/00 로 종료
-        return topicVal=this.basicSequenceRule();
+        return topicVal+=this.basicSequenceRule();
     }
+    
+    private String checkTargetSystem(SequenceRuleDto ruleDto, String targetSystem ) {
+    	String ruleResult = null;
+    	String modifiedTarget = ruleDto.getModifiedTarget();
+//    	if ( targetSystem != null ) {
+			if ( modifiedTarget != null ) {
+				log.info("&&* 1 checkTargetSystem, targetSystem : {} , modifiedTarget {} ",targetSystem, modifiedTarget);
+				ruleResult = modifiedTarget;
+			} else {
+				log.info("&&* 2 checkTargetSystem, targetSystem : {} ", targetSystem);
+				ruleResult = targetSystem;
+			}
+//    	} else {
+//    		log.info("&&* 3 checkTargetSystem, ruleDto.getTarget() : {} ", ruleDto.getTarget());
+//    		if ( ruleDto.getTarget() != null ) {
+//    			ruleResult = ruleDto.getTarget();
+//    		} else 
+//    			
+//    		
+//    	}
+    	log.info("&&* checkTargetSystem, ruleResult : "+ruleResult);
+    	return ruleResult;
+    }
+    
     private String getTypeIdParsingRule(SequenceRuleDto ruleDto, String key ) {
     	String type = "";
         String topicVal = null;

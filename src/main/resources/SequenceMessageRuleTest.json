@@ -19,7 +19,7 @@
   },
   "BRS_TRACK_IN_CNFM_REQ":{
   	"cid": "BRS_TRACK_IN_CNFM_REQ",
-    "tgt": "BRS",
+    "tgt": "WFS",
     "payload": {
       "head": {
         "cid": "BRS_TRACK_IN_CNFM_REQ",
