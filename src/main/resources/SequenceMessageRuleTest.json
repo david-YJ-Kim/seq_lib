@@ -1,4 +1,42 @@
 {
+  "NEW_SCENARIO_ID": {
+    "cid": "FIS_FILE_REQ",
+    "tgt": "FIS",
+    "payload": {
+      "head": {
+        "cid": "FIS_FILE_REQ",
+        "tid": "202303030000011",
+        "osrc": "",
+        "otgt": "",
+        "src": "",
+        "srcEqp": "",
+        "tgt": "FIS",
+        "tgtEqp": ""
+      },
+      "body": {
+        "fileType": "INSP",
+        "filePath": "C:\\davidkim",
+        "fileName": "david_insp.csv",
+        "userId": "WFS"
+      }
+    },
+    "type": "LOT",
+    "answer": {
+      "fis": "SMV/DEV/FIS/LOT/00",
+      "tst": "$topic",
+      "mcs": "$topic",
+      "rtd": "$topic",
+      "eap": "$topic",
+      "rms": "$topic",
+      "mss": "$topic",
+      "crs": "$topic",
+      "spc": "$topic",
+      "wfs": "$topic",
+      "brs": "$topic",
+      "oia": "$topic"
+    },
+  },
+
   "SCENARIO_ID": {
     "cid": "$cid",
     "tgt": "$tgt",

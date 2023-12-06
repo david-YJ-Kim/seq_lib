@@ -125,9 +125,18 @@ public final class SequenceManager {
     	/**
     	 * Validation if payload , targetSystem , eventName
     	 **/ 
-    	if ( payload == null ) return this.topicHeader+SequenceManageUtil.getCommonDefaultTopic().substring(1); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
-    	else if (targetSystem == null || targetSystem.length() == 0 ) targetSystem = getTargetNameFromHeader(new JSONObject(payload));
-    	else if (eventName == null || eventName.length() == 0 ) eventName = getMessageNameFromHeader(new JSONObject(payload));
+    	if ( payload == null ) {  // SVM/DEV//CMN/00
+            // TODO payload와 target system 두 개 다 null 이라면? >> 대응 필요
+            return this.topicHeader + targetSystem + SequenceManageUtil.getCommonDefaultTopic(); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
+            
+        }else if (targetSystem == null || targetSystem.length() == 0){
+
+            targetSystem = getTargetNameFromHeader(new JSONObject(payload));
+
+        }else if (eventName == null || eventName.length() == 0 ) {
+
+            eventName = getMessageNameFromHeader(new JSONObject(payload));
+        }
         
         logger.info("## @@@ -- targetSyste : "+targetSystem);
         
@@ -151,20 +160,8 @@ public final class SequenceManager {
                     topicVal = targetSystem + getTopicNameForEAP(this.sourceSystem, targetSystem, eventName, payload);
                     break;
 
-                case SystemNameList.MCS:
-                case SystemNameList.FDC:
-                case SystemNameList.SPC:
-                case SystemNameList.RMS:
-                case SystemNameList.RTD:
-                case SystemNameList.MSS:
-                case SystemNameList.CRS:
-                case SystemNameList.WFS:
-                case SystemNameList.BRS:
-                    topicVal = targetSystem + this.getTopicNameForParsingRule(targetSystem, eventName, payload);
-                    break;
                 default:
-                    // TODO targetSystem이 없는 경우는..?
-                	topicVal = this.getTargetNameFromHeader(new JSONObject(payload)) + SequenceManageUtil.getCommonDefaultTopic();
+                    topicVal = targetSystem + this.getTopicNameForParsingRule(targetSystem, eventName, payload);
                     break;
 
             }
@@ -246,10 +243,14 @@ public final class SequenceManager {
         // 3. ParsingRule Checker.
         ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
         if( ruleDtoArrayList != null ){
+            // 메모리에 기준 정보 등록된 경우 >< MOS 계열  BRS, WFS
             ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
                     ruleDtoArrayList);
             logger.info("## 3. executeParsingRule with ruleDtoArrayList");
+
+
         } else {
+            // 메모리에 기준 정보가 없는 경우  >> SPC, RMS, FDC, MCS, MSS, RTD 등
             ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
             logger.info("## 4. executeParsingRule without ruleDtoArrayList");
         }

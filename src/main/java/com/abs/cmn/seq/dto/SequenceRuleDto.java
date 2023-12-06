@@ -3,20 +3,17 @@ package com.abs.cmn.seq.dto;
 import com.abs.cmn.seq.code.SeqCommonCode;
 import org.json.JSONObject;
 
-/**
- * 메시지 분배 룰 정보를 담은 객체
- */
+
 public class SequenceRuleDto {
 
     private String eventName;
     private String parsingItem;
     private String position;
     private String type;
-    private String target;
+    private String target; // Modified 타켓
+    private String modifiedTarget;
 
     
-    public SequenceRuleDto() {
-    }
 
     public SequenceRuleDto(String jsonString){
         this(new JSONObject(jsonString));

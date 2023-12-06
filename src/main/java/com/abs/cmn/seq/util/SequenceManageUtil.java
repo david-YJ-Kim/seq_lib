@@ -49,6 +49,10 @@ public class SequenceManageUtil {
         }
     }
 
+    public static boolean isStringNull(String element){
+        return element == null || element.length() == 0 ? true : false;
+    }
+
     public static String getCommonDefaultTopic(){
         return SequenceManageUtil.getCommonTopic("00");
     }

@@ -17,7 +17,8 @@
         {
           "parsingItem": "carrId",
           "position": null,
-          "type": "CARR"
+          "type": "CARR",
+          "target": "BRS"
         },
         {
           "parsingItem": "carrList/carrId",
