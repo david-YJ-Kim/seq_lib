@@ -642,7 +642,7 @@
         "parsingItem": "$item",
         "position": null,
         "type": "$type",
-        "target": "$SystemName"
+        "modifiedTarget": "$SystemName"
       }
     ],
     "BRS": [
@@ -651,44 +651,50 @@
         "parsingItem": "eqpId",
         "position": "2,4,5,8",
         "type": null,
-        "target": "BRS"
+        "modifiedTarget": "BRS"
       },
       {
         "eventName": "BRS_TRACK_IN_REQ",
         "parsingItem": "eqpId",
         "position": "2,4,5,8",
         "type": "EQP",
-        "target": "WFS"
+        "modifiedTarget": "WFS"
       }
     ],
-    "WFS": [
+    "WFS": [{
+        "eventName": "BRS_TRACK_IN_CNFM_REQ",
+        "parsingItem": "eqpId",
+        "position": "2,4,5,8",
+        "type": null,
+        "modifiedTarget": "BRS"
+      },
       {
         "eventName": "WFS_CARR_ID_READ",
         "parsingItem": "eqpId",
         "position": "2,4,5,8",
         "type": "EQP",
-        "target": "WFS"
+        "modifiedTarget": "WFS"
       },
       {
         "eventName": "WFS_SLOTMAP_REPORT",
         "parsingItem": "eqpId",
         "position": null,
         "type": "EQP",
-        "target": "WFS"
+        "modifiedTarget": "WFS"
       },
       {
         "eventName": "WFS_CARR_ID_READ_01",
         "parsingItem": "carrId",
         "position": 7,
         "type": "LOT",
-        "target": null
+        "modifiedTarget": null
       },
       {
         "eventName": "WFS_SLOTMAP_REPORT_01",
         "parsingItem": "lotId",
         "position": null,
         "type": "LOT",
-        "target": "BRS"
+        "modifiedTarget": "BRS"
       }
     ]
   }

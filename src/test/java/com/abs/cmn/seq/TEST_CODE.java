@@ -2,23 +2,23 @@ package com.abs.cmn.seq;
 
 public enum TEST_CODE {
 	// 메세지 이름 파싱 룰
-//	BRS_TRACK_IN_CNFM_REQ,	// 메시지룰 1	1,2,3 케이스 필요
-//	BRS_TRACK_IN_REQ,		// 메시지룰 2	1,2,3 케이스 필요
-//	WFS_CARR_ID_READ,		// 메시지룰 3	1,2,3 케이스 필요
-//	WFS_CARR_ID_READ_01,	// 메시지룰 4
-//	WFS_SLOTMAP_REPORT,		// 메시지룰 5	1,2,3 케이스 필요
-//	WFS_SLOTMAP_REPORT_01,	// 메시지룰 6
+	BRS_TRACK_IN_CNFM_REQ,	// 메시지룰 1	1,2,3 케이스 필요
+	BRS_TRACK_IN_REQ,		// 메시지룰 2	1,2,3 케이스 필요
+	WFS_CARR_ID_READ,		// 메시지룰 3	1,2,3 케이스 필요
+	WFS_CARR_ID_READ_01,	// 메시지룰 4
+	WFS_SLOTMAP_REPORT,		// 메시지룰 5	1,2,3 케이스 필요
+	WFS_SLOTMAP_REPORT_01,	// 메시지룰 6
 	
 	// 파싱 룰
-//    PARSING_MSG_TO_WFS_01,
-//    PARSING_MSG_TO_WFS_02,
-//    PARSING_MSG_TO_WFS_03,
-//    PARSING_MSG_TO_WFS_04,
-//    PARSING_MSG_TO_WFS_05,
-//    PARSING_MSG_TO_WFS_06,
-//    PARSING_MSG_TO_WFS_07,
-//    PARSING_MSG_TO_WFS_08,
-//    PARSING_MSG_TO_WFS_09,
+    PARSING_MSG_TO_WFS_01,
+    PARSING_MSG_TO_WFS_02,
+    PARSING_MSG_TO_WFS_03,
+    PARSING_MSG_TO_WFS_04,
+    PARSING_MSG_TO_WFS_05,
+    PARSING_MSG_TO_WFS_06,
+    PARSING_MSG_TO_WFS_07,
+    PARSING_MSG_TO_WFS_08,
+    PARSING_MSG_TO_WFS_09,
     PARSING_MSG_TO_WFS_10,
     PARSING_MSG_TO_WFS_11,
     PARSING_MSG_TO_WFS_12,
