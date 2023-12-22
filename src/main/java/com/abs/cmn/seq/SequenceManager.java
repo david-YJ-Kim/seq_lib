@@ -18,8 +18,6 @@ import com.abs.cmn.seq.executor.SequenceRuleExecutor;
 import com.abs.cmn.seq.util.SequenceManageUtil;
 import com.abs.cmn.seq.util.file.RuleFileWatcher;
 
-//import com.abs.mes.util.JsonUtil;
-
 public final class SequenceManager {
 	private static final Logger logger = LoggerFactory.getLogger(SequenceManager.class);
 
@@ -138,11 +136,11 @@ public final class SequenceManager {
             eventName = getMessageNameFromHeader(new JSONObject(payload));
         }
         
-        logger.info("## @@@ -- targetSyste : "+targetSystem);
+        logger.info("## @@@ -- targetSystem : "+targetSystem);
         
         // 1. EventRuleChecker
         String checkEventRuleResult = this.checkEventRule(targetSystem, eventName, payload);
-        logger.info("** checkEventRuleResult : "+checkEventRuleResult);
+        logger.info("** checkEventRuleResult: {}", checkEventRuleResult);
         
         /**
          * if 이벤트 룰 파싱 결과가 있는 경우 해당 토픽 리턴,
@@ -150,9 +148,9 @@ public final class SequenceManager {
          **/
         if(checkEventRuleResult != null){
         	topicVal = checkEventRuleResult;
-        	logger.info("1-1 ---------------------- checkEventRuleResult : "+topicVal);
+        	logger.info("1-1 ---------------------- checkEventRuleResult : "+ topicVal);
         }else{
-        	logger.info("2 ---------------------- checkEventRuleResult : "+checkEventRuleResult);
+        	logger.info("2 ---------------------- checkEventRuleResult : "+ checkEventRuleResult);
 
             switch (targetSystem){
 
@@ -168,6 +166,7 @@ public final class SequenceManager {
         }
 
         topicName = topicHeader.concat(topicVal);
+        logger.info("Final topic name: {}", topicName);
 
         try{
             Objects.requireNonNull(topicVal);
@@ -183,50 +182,30 @@ public final class SequenceManager {
     }
 
     private String checkEventRule(String targetSystem, String eventName, String payload){
-        String ruleResult = null;
+        String ruleResultFormat = "%s/%s";
+        String resultTargetSystem;
+        String resultTargetValue;
+
         // 1. EventRuleChecker
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
-        
-        if(sequenceRuleDto != null){
 
-        	logger.info("@@ -- checkEventRule : sequenceRuleDto : not null , "+ sequenceRuleDto.toString());
-            // 룰에 등록된 Target과 요청 받은 Target이 동일한지 확인
-            // 서로 다를 경우, 룰에 등록된 타켓 정보를 우선으로 분배
-        	
-        	if ( targetSystem != null ) {
-        		
-        		if ( sequenceRuleDto.getTarget() != null ) {
-        			logger.info("## 1. MessageNameRuleCheck , targetSystem O , ruleTarget O ");
-        			ruleResult = sequenceRuleDto.getTarget();
-        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-        		} else {
-        			logger.info("## 1. MessageNameRuleCheck , targetSystem O , ruleTarget X ");
-        			ruleResult = targetSystem;
-        			ruleResult += this.ruleExecutor.executeEventRule(targetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
-        		}
-        		
-        	} else {
-        		String tgt = this.getTargetNameFromHeader(new JSONObject(payload));
-        		
-        		if ( sequenceRuleDto.getTarget() != null ) {
-        			ruleResult = sequenceRuleDto.getTarget();
-        			ruleResult += this.ruleExecutor.executeEventRule(sequenceRuleDto.getTarget(), eventName, new JSONObject(payload), sequenceRuleDto);
-        		} else {
-        			ruleResult = targetSystem;
-        			ruleResult += this.ruleExecutor.executeEventRule(tgt, eventName, new JSONObject(payload), sequenceRuleDto);
-        		}
-        		
-        	}
+        if(sequenceRuleDto == null){
+            return null;
 
-        	logger.info("##  rule Dto not null - path :: return ruleResult : "+ruleResult );
-        } else {
-        	logger.info("after get Event rule params , targetSystem : "+targetSystem);
-        	logger.info("after get Event rule params , eventName : "+eventName);
-        	logger.info("after get Event rule params , payload : "+payload);
+        }else {
+
+            logger.info("Sequence Rule has been registered. details: {}", sequenceRuleDto.toString());
+
+            resultTargetSystem = (targetSystem == null) ? sequenceRuleDto.getTarget() : targetSystem;
+            resultTargetValue = this.ruleExecutor.executeEventRule(resultTargetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+
+            String returnVal = String.format(ruleResultFormat, resultTargetSystem, resultTargetValue);
+            logger.info("Sequence Rule result: {}", returnVal);
+            return returnVal;
+
+
         }
         
-        // $큐타입/$큐 키
-        return ruleResult;
     }
 
     private String getTopicNameForEAP(String sourceSystem, String targetSystem, String eventName, String payload) {
