@@ -1,0 +1,9 @@
+{
+  "version": "v1.0.0",
+  "history": {
+    "v1.0.0": {
+      "comment": "Release for production env.",
+      "date": "2024-02-22"
+    }
+  }
+}

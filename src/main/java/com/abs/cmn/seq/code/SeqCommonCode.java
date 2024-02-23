@@ -20,5 +20,8 @@ public enum SeqCommonCode {
     position,
     type,
     target,
+
+    Version,
+    FileWatchFlag,
     sequence;
 }

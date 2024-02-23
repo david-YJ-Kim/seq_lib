@@ -1,8 +1,10 @@
 package com.abs.cmn.seq;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,6 +49,8 @@ public final class SequenceManager {
     private String env;
 
     private int queueCount;
+    private String ruleVersion;
+    private boolean fileWatchFlag;
 
     private String topicHeader;
     private String ruleFilePath;
@@ -57,7 +61,7 @@ public final class SequenceManager {
     private final EventRuleChecker eventRuleChecker;
     private final SequenceRuleExecutor ruleExecutor;
 
-    private final Thread ruleFileWatcherThread;
+    private Thread ruleFileWatcherThread;
 
 
     /**
@@ -72,10 +76,16 @@ public final class SequenceManager {
     public SequenceManager(String sourceSystem, String site, String env,
                             String ruleFilePath, String ruleFileName) throws IOException {
 
-        logger.info("SequenceManager start to initialize. Parameter for constructor." +
-                " sourceSystem: {}, site: {}, env: {}," +
-                " ruleFilePath: {}. ruleFileName: {}",
-                sourceSystem, site, env, ruleFilePath, ruleFileName);
+
+        String filePath = "version.json"; // resources 폴더 내의 버전 파일 경로
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream(filePath);
+        JSONObject versionObject = new JSONObject(SequenceManageUtil.convertToString(is));
+
+        logger.info("SequenceManager start to initialize. Version: {}, Parameter for constructor."
+                + "sourceSystem: {}, site: {}, env: {}, ruleFilePath: {}, ruleFileName: {}."
+                ,versionObject.getString("version"), sourceSystem, site, env, ruleFilePath, ruleFileName
+        );
 
 
         this.sourceSystem = sourceSystem;
@@ -85,8 +95,21 @@ public final class SequenceManager {
         this.ruleFilePath = ruleFilePath;
         this.ruleFileName = ruleFileName;
 
-        JSONObject ruleDataObj = new JSONObject(SequenceManageUtil.readFile(ruleFilePath.concat(ruleFileName)));
+        JSONObject ruleDataObj = null;
+        try{
 
+         ruleDataObj = new JSONObject(SequenceManageUtil.readFile(ruleFilePath.concat(ruleFileName)));
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("{}" +
+                     "ruleFilePath: {}, ruleFileName: {}, Error: {}"
+                    ,"Fail to read rule file."
+                    ,ruleFilePath, ruleFileName, e.getMessage()
+            );
+        }
+
+        this.ruleVersion = ruleDataObj.getString(SeqCommonCode.Version.name());
+        this.fileWatchFlag = ruleDataObj.getBoolean(SeqCommonCode.FileWatchFlag.name());
         this.queueCount = ruleDataObj.getInt(SeqCommonCode.QueueCount.name());
         this.eventRuleChecker = new EventRuleChecker(ruleFilePath, ruleFileName,
                                                      ruleDataObj.getJSONObject(SeqCommonCode.EventNameRule.name()));
@@ -94,8 +117,13 @@ public final class SequenceManager {
                                                         ruleDataObj.getJSONObject(SeqCommonCode.ParsingItemRule.name()));
         this.ruleExecutor = new SequenceRuleExecutor(this.queueCount);
 
-        this.ruleFileWatcherThread = this.initializeFileWatcher();
-        this.ruleFileWatcherThread.start();
+        if(this.fileWatchFlag){
+            this.ruleFileWatcherThread = this.initializeFileWatcher();
+            this.ruleFileWatcherThread.start();
+            logger.info("{}"
+                    ,"File watch service is now on."
+            );
+        }
 
 
         logger.info("SequenceManager has been initialized. Print SequenceManager clas information." + System.lineSeparator()
@@ -112,61 +140,104 @@ public final class SequenceManager {
      * @return
      */
     public String getTargetName(String targetSystem, String eventName, String payload){
+
+        String key = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+
+        logger.debug("{}: {}" +
+                "targetSystem: {}, eventName: {}, payload: {}."
+                ,key ,"Print all parameters."
+                , targetSystem, eventName, payload
+        );
+
         // topic Header = SVM/DEV/
     	String topicName;
     	String topicVal = null;
     	
-    	logger.info("@@ -getTargetName()- params : targetSystem : "+ targetSystem);
-    	logger.info("@@ -getTargetName()- params : eventName : "+ eventName);
-    	logger.info("@@ -getTargetName()- params : payload : "+ payload);
-    	
     	/**
-    	 * Validation if payload , targetSystem , eventName
-    	 **/ 
-    	if ( payload == null ) {  // SVM/DEV//CMN/00
-            // TODO payload와 target system 두 개 다 null 이라면? >> 대응 필요
-            return this.topicHeader + targetSystem + SequenceManageUtil.getCommonDefaultTopic(); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
-            
+    	 * A. Validation about each parameter.
+         * if something is null, find in given parameter.
+    	 **/
+        // if payload is null
+        // > then return with common topic.
+    	if ( payload == null ) {
+
+
+            // what if payload and target is null
+            // > then Get target system from event name. and return Common topic
+            if(targetSystem == null || targetSystem.length() == 0){
+                targetSystem = SequenceManageUtil.getTargetSystem(eventName);
+            }
+            logger.warn("{}: {}" +
+                            "targetSystem: {}, eventNvame: {}, payload: {}."
+                    , key ,"Mandatory parameter is null. so return common topic. please fill out all the parameters."
+                    , targetSystem, eventName, payload
+            );
+            return this.topicHeader + targetSystem + SequenceManageUtil.getCommonDefaultTopic(key); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
+
+
+        // if targetSystem is null
+        // > then find in payload
         }else if (targetSystem == null || targetSystem.length() == 0){
 
-            targetSystem = getTargetNameFromHeader(new JSONObject(payload));
+            targetSystem = SequenceManageUtil.getTargetNameFromHeader(key, new JSONObject(payload));
 
+        // if eventName is null
+        // > then find in payload
         }else if (eventName == null || eventName.length() == 0 ) {
 
-            eventName = getMessageNameFromHeader(new JSONObject(payload));
+            eventName = SequenceManageUtil.getMessageNameFromHeader(key, new JSONObject(payload));
         }
-        
-        logger.info("## @@@ -- targetSystem : "+targetSystem);
-        
-        // 1. EventRuleChecker
-        String checkEventRuleResult = this.checkEventRule(targetSystem, eventName, payload);
-        logger.info("** checkEventRuleResult: {}", checkEventRuleResult);
-        
+
+        logger.info("{}: {}" +
+                        "targetSystem: {}, eventName: {}, payload: {}."
+                , key ,"Print parameters after validation."
+                , targetSystem, eventName, payload
+        );
+
+
         /**
-         * if 이벤트 룰 파싱 결과가 있는 경우 해당 토픽 리턴,
-         * else 파싱룰 : EAP 만 별도 파싱 룰, 나머지는 모두 동일한 파싱룰 진행 
-         **/
+         * B. Verify if the event rule has been registered..
+         */
+        // 1. EventRuleChecker
+        String checkEventRuleResult = this.checkEventRule(key, targetSystem, eventName, payload);
+        logger.info("{}: {}" +
+                        "checkEventRuleResult: {}."
+                , key ,"Result of verification of event rule."
+                , checkEventRuleResult
+        );
+
         if(checkEventRuleResult != null){
         	topicVal = checkEventRuleResult;
-        	logger.info("1-1 ---------------------- checkEventRuleResult : "+ topicVal);
-        }else{
-        	logger.info("2 ---------------------- checkEventRuleResult : "+ checkEventRuleResult);
+            logger.info("{}: {}" +
+                            "topicVal: {}, checkEventRuleResult: {}."
+                    , key ,"Result of event rule."
+                    , topicVal, checkEventRuleResult
+            );
 
+        /**
+         * C. Basic topic generate rule based on its target system.
+         */
+        }else{
             switch (targetSystem){
 
                 case SystemNameList.EAP:
-                    topicVal = targetSystem + getTopicNameForEAP(this.sourceSystem, targetSystem, eventName, payload);
+                    topicVal = targetSystem + getTopicNameForEAP(key, this.sourceSystem, targetSystem, eventName, payload);
                     break;
 
                 default:
-                    topicVal = targetSystem + this.getTopicNameForParsingRule(targetSystem, eventName, payload);
+                    topicVal = targetSystem + this.getTopicNameForParsingRule(key, targetSystem, eventName, payload);
                     break;
 
             }
         }
 
         topicName = topicHeader.concat(topicVal);
-        logger.info("Final topic name: {}", topicName);
+        logger.info("{}: {}" +
+                        "topicName: {}, topicHeader: {}, topicVal: {}, targetSystem: {}."
+                ,key ,"Result of basic topic generating rule."
+                , topicName, topicHeader, topicVal, targetSystem
+        );
+
 
         try{
             Objects.requireNonNull(topicVal);
@@ -175,13 +246,20 @@ public final class SequenceManager {
         }catch (NullPointerException e){
             e.printStackTrace();
             logger.error(e.toString());
-            return topicHeader + SequenceManageUtil.getCommonDefaultTopic();
+            return topicHeader + SequenceManageUtil.getCommonDefaultTopic(key);
         }
 
 
     }
 
-    private String checkEventRule(String targetSystem, String eventName, String payload){
+    /**
+     *
+     * @param targetSystem
+     * @param eventName
+     * @param payload
+     * @return
+     */
+    private String checkEventRule(String key, String targetSystem, String eventName, String payload){
         String ruleResultFormat = "%s/%s";
         String resultTargetSystem;
         String resultTargetValue;
@@ -208,31 +286,71 @@ public final class SequenceManager {
         
     }
 
-    private String getTopicNameForEAP(String sourceSystem, String targetSystem, String eventName, String payload) {
+    private String getTopicNameForEAP(String key, String sourceSystem, String targetSystem, String eventName, String payload) {
 
-        return "/" + ruleExecutor.executeEAPParsingRule(new JSONObject(payload));
+        return "/" + ruleExecutor.executeEAPParsingRule(key, new JSONObject(payload));
 
     }
 
-    private String getTopicNameForParsingRule(String targetSystem, String eventName, String payload){
+    /**
+     * C. Basic topic generation rul > B.Others
+     * @param targetSystem
+     * @param eventName
+     * @param payload
+     * @return
+     */
+    private String getTopicNameForParsingRule(String key, String targetSystem, String eventName, String payload){
 
         String ruleResult = null;
 
-        logger.info("Event Rule is not registered.");
-        // 3. ParsingRule Checker.
         ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
-        if( ruleDtoArrayList != null ){
-            // 메모리에 기준 정보 등록된 경우 >< MOS 계열  BRS, WFS
-            ruleResult = this.ruleExecutor.executeParsingRule(targetSystem, eventName, new JSONObject(payload),
+        logger.info("{}: {}" +
+                        "ruleDtoArrayList_size: {}."
+                ,key ,"Get basic topic generate rule a.k.a parsing rule."
+                , ruleDtoArrayList.size()
+        );
+
+        /**
+         * A. Undefined System
+         * ex) SPC, FDC, MCS, OIA, FIS etc...
+         */
+        if(ruleDtoArrayList == null || ruleDtoArrayList.size() == 0){
+
+            String allElementsAsString = ruleDtoArrayList.stream()
+                    .map(Object::toString) // Assuming SequenceRuleDto has overridden toString() method
+                    .reduce((result, element) -> result + ", " + element) // Concatenate all elements
+                    .orElse(""); // Handle the case when the list is empty
+
+            logger.warn("{}: {}" +
+                            "targetSystem: {}, ruleDtoArrayList: {}."
+                    ,key ,"System is not registered in parsing rule."
+                    , targetSystem, allElementsAsString
+            );
+
+            ruleResult = SequenceManageUtil.getCommonDefaultTopic(key);
+
+            logger.warn("{}: {}" +
+                            "targetSystem: {}, ruleResult: {}."
+                    ,key ,"Undefined system will be returned in common topic."
+                    , targetSystem, ruleResult
+            );
+
+
+        /**
+         * B. Defined System
+         * ex) BRS, WFS, RMS, etc...
+         */
+        }else{
+
+            ruleResult = this.ruleExecutor.executeParsingRule(key, targetSystem, eventName, new JSONObject(payload),
                     ruleDtoArrayList);
-            logger.info("## 3. executeParsingRule with ruleDtoArrayList");
-
-
-        } else {
-            // 메모리에 기준 정보가 없는 경우  >> SPC, RMS, FDC, MCS, MSS, RTD 등
-            ruleResult = targetSystem.concat(SequenceManageUtil.getCommonDefaultTopic());
-            logger.info("## 4. executeParsingRule without ruleDtoArrayList");
+            logger.info("{}: {}" +
+                            "targetSystem: {}, ruleResult: {}."
+                    ,key ,"Topic will be returned according to parsing rule."
+                    , targetSystem, ruleResult
+            );
         }
+
 
         return "/" + ruleResult;
 
@@ -261,29 +379,7 @@ public final class SequenceManager {
         // TODO Rule File 갱신 파일 생성
     };
 
-    private String getTargetNameFromHeader(JSONObject payload) {
-    	logger.info(":: getTargetNameFromHeader - header : "+payload.getJSONObject( PayloadCommonCode.head.name()));
-    	JSONObject header;
-    	if ( payload.length() != 0 ) {
-    		header = payload.getJSONObject( PayloadCommonCode.head.name());
-    		logger.info("-- getTargetNameFromHeader :: get Target : "+header.getString(PayloadCommonCode.tgt.name()));
-    		return header.getString(PayloadCommonCode.tgt.name());
-    	} else { 
-    		return "";
-    	}
-    	
-    }
-    
-    private String getMessageNameFromHeader(JSONObject payload) {
-    	logger.info(":: getMessageNameFromHeader - header : "+payload.getJSONObject( PayloadCommonCode.head.name()));
-    	JSONObject header ;
-    	if ( payload.length() != 0 ) {
-	    	header = payload.getJSONObject( PayloadCommonCode.head.name());
-	    	logger.info("getMessageNameFromHeader :: get MessageName : "+header.getString(PayloadCommonCode.cid.name()));
-	    	return header.getString(PayloadCommonCode.cid.name());
-    	} else 
-    		return "";
-    }
+
 
 
     @Override
