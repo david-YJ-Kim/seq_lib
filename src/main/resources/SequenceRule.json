@@ -1,0 +1,589 @@
+{
+  "Version": "1.0.0",
+  "Description": {
+    "2023-11-27": "Event name rule 추가, WFS_UNLOAD_REQ가 EQP로 줄 서야 한다."
+
+  },
+  "FileWatchFlag": false,
+  "QueueCount": 20,
+  "ParsingItemRule": {
+    "MCS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "RTD": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "EAP": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "RMS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "MSS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "CRS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "SPC": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "WFS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "BRS": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    },
+    "OIA": {
+      "WFS": [
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        },
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lot/lotId",
+          "position": 7,
+          "type": "LOT"
+        }
+      ],
+      "BRS": [
+        {
+          "parsingItem": "lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "lotList/lotId",
+          "position": 7,
+          "type": "LOT"
+        },
+        {
+          "parsingItem": "carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "carrList/carrId",
+          "position": null,
+          "type": "CARR"
+        },
+        {
+          "parsingItem": "eqpId",
+          "position": "1,4,5,8",
+          "type": "EQP"
+        }
+      ]
+    }
+  },
+  "EventNameRule": {
+    "WFS": [
+      {
+        "eventName": "WFS_UNLOAD_REQ",
+        "parsingItem": "eqpId",
+        "position": "1,4,5,8",
+        "type": "EQP",
+        "target": "WFS"
+      },
+      {
+        "eventName": "WFS_INVT_CARR_DATA",
+        "parsingItem": "carrIfrmList/carrId",
+        "position": null,
+        "type": "CARR",
+        "target": "WFS"
+      }
+    ]
+  }
+}
