@@ -1,0 +1,9 @@
+{
+  "site": "SVM",
+  "env": "DEV",
+  "file": {
+    "path": "C:\\workspace\\abs\\cmn.seq\\src\\main\\resources\\",
+    "rule_name": "SequenceRule.json",
+    "test_name": "SequenceMessageRuleTest.json"
+  }
+}

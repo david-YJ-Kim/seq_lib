@@ -77,6 +77,14 @@ public final class SequenceManager {
                            String ruleFilePath, String ruleFileName) throws IOException {
 
 
+        if(sourceSystem == null || sourceSystem.isEmpty() ||
+            site == null || site.isEmpty() ||
+            env == null || env.isEmpty()
+        ){
+            String format = "Key parameters cannot be null or empty. system: %s, site: %s, env: %s";
+            throw new IllegalArgumentException(String.format(format, sourceSystem, site, env));
+        }
+
         String filePath = "version.json"; // resources 폴더 내의 버전 파일 경로
 
         InputStream is = getClass().getClassLoader().getResourceAsStream(filePath);

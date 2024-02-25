@@ -347,12 +347,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {

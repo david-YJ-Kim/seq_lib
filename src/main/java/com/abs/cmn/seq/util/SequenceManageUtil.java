@@ -15,6 +15,13 @@ public class SequenceManageUtil {
 
     public static Logger logger = LoggerFactory.getLogger(SequenceManageUtil.class);
 
+
+
+    public static InputStream getFileInResource(String filePathWithName){
+
+        return SequenceManageUtil.class.getClassLoader().getResourceAsStream(filePathWithName);
+
+    }
     public static String generateMessageID(){
 
         String randomeUUIDString = UUID.randomUUID().toString();
