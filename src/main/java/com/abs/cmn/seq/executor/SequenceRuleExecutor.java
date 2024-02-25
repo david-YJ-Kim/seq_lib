@@ -1,11 +1,10 @@
 package com.abs.cmn.seq.executor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.abs.cmn.seq.util.SequenceManageUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,50 +26,77 @@ public class SequenceRuleExecutor {
 
     /**
      * 이벤트 룰 실행 메소드
+     * @param key
      * @param targetName
      * @param eventName
      * @param payload
      * @param ruleDto
      * @return
      */
-    public String executeEventRule(String targetName, String eventName, JSONObject payload, SequenceRuleDto ruleDto){
+    public String executeEventRule(String key, String targetName, String eventName, JSONObject payload, SequenceRuleDto ruleDto){
 
-        logger.info("$$>> executeEventRule param targetName : {},%n eventName: {}, "+targetName, eventName);
-        String type = null;
-        String parsingTargetItem = null;
+        JSONObject bodyObj = payload.getJSONObject(PayloadCommonCode.body.name());
+        logger.debug("{} Execute EventRule. Print all input param " +
+                "targetName : {}, eventName: {}, payload: {}, RuleDto: {} "
+                ,key, targetName, eventName, payload.toString(), ruleDto.toString());
 
-        // type 이 null 이면 parsing item 에서 값을 가져옴
-        if(!SequenceManageUtil.isStringNull(ruleDto.getType())){
-            type = ruleDto.getType();
+        String queueType = null;
+        if(SequenceManageUtil.validString(ruleDto.getType())){
+            queueType = ruleDto.getType();
 
         }else{
-
-            type = this.parseFromParsingItemName(ruleDto.getParsingItem());
+        // type 이 null 이면 parsing item 에서 값을 가져옴
+            queueType = this.getQueueTypeFromParsingItem(key, ruleDto.getParsingItem());
+            logger.warn("{} Type is not defined in Rule information. " +
+                            "Guessing type : {} from parsing item: {}"
+                        , key, queueType, ruleDto.getParsingItem());
         }
+        logger.info("{} Queue type is set up. Currently it will be LOT, EQP, CARR or CMN" +
+                "Type: {}"
+                ,key, queueType);
 
 
-        // KEY 구하는 부분
+        String parsingValue = null;
+        try{
         // Parsing Item 에 Depth 있을 경우와 없을 경우, key 값을 가져옴.
-        if(this.isDepthCase(ruleDto.getParsingItem())){
-            logger.info(">> Depth parsing item : {} ", ruleDto.getParsingItem());
-            parsingTargetItem = parseParsingItemDepth(ruleDto.getParsingItem(),
-                    payload.getJSONObject(PayloadCommonCode.body.name()));
-        } else {
-            parsingTargetItem = payload.getJSONObject(PayloadCommonCode.body.name()).getString(ruleDto.getParsingItem());
+            if(this.isDepthCase(ruleDto.getParsingItem())){
+                logger.info("{} Depth case. " +
+                                " parsing item : {} "
+                        ,key, ruleDto.getParsingItem());
+                parsingValue = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
+            } else {
+                if( !bodyObj.isNull(ruleDto.getParsingItem()) ){
+
+                    parsingValue = bodyObj.getString(ruleDto.getParsingItem());
+                }else{
+                    logger.error("{} Parsing Item is not in payload." +
+                            "parsing Item : {}, payloadBody: {} "
+                    , key, ruleDto.getParsingItem(), bodyObj.toString());
+                    return null;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("{} Error has been occurred while getting Parsing value." +
+                    "parsing item: {}, error:{}"
+            , key, ruleDto.getParsingItem(), e);
+            throw e;
         }
 
+        logger.info("{} Parsing value is set up. Get queue value with paring value according to queue type and position." +
+                        "parsingValue: {}"
+                ,key, parsingValue);
 
-        // TODO parsingItem이 payload-body에 없는 경우
-        logger.info("@@ 1 executeEventRule Parsing item : {} ", ruleDto.getParsingItem());
-        logger.info("@@ 2 executeEventRule type : {}", type);
-        logger.info("@@ 3 executeEventRule key : {}", parsingTargetItem);
 
-        // 타입 설정
+
         // 큐 타입 설정 - 타입 분류는 위에서 이미 함.
+        String topicKey = this.generateTopicKey(key, parsingValue, ruleDto.getPosition());
+        String topicValue = queueType + "/" + topicKey;
+        logger.info("{} topic value has been  generated. topicValue: {}." +
+                        "Using parsing value: {}, queueType: {}",
+                key, topicValue, parsingValue, queueType);
+        return topicValue;
 
-        String topicVal = this.getTypeIdParsingRule(ruleDto, parsingTargetItem);
-        logger.info("topic Value: {}", topicVal);
-        return this.getLastValue(parsingTargetItem, topicVal, ruleDto);
 
     }
 
@@ -111,7 +137,7 @@ public class SequenceRuleExecutor {
             // TODO Modified Target 관련한 내용으로 추정, 현재 해당 내용 이해 못함... 문서 확인 필요 (2024-02-12, David)
             // TODO Modified Target 관련하여 고민 필요
             // 룰에 등록된 타겟은 Modified Target으로 인지 Modified 일 때의 룰 수행으로 변경
-            if(!SequenceManageUtil.isStringNull(ruleDto.getTarget())){
+            if(SequenceManageUtil.validString(ruleDto.getTarget())){
                 // 룰에 등록된 모디파이 타켓과 파라미터로 들어온 타켓 시스템을 비교한다
                 if(!ruleDto.getTarget().equals(targetSystem)){
 
@@ -126,7 +152,6 @@ public class SequenceRuleExecutor {
              */
             else {
 
-                String parsingTargetItem = ""; // parsingTargetItem
                 String position = "";
                 /**
                  * 1. 파싱 아이템에 Depth 가 있는지 확인  하여 parsingTargetItem 변수에 item 값 설정
@@ -134,17 +159,18 @@ public class SequenceRuleExecutor {
                  *  Depth가 없다면, 바로 아이템 값을 읽어옴
                  **/
 
+                String parsingValue = ""; //
                 // Depth 있는 케이스
                 if(this.isDepthCase(ruleDto.getParsingItem())){
 
                     logger.info(">> 34-1. Depth parsing item : {} : {}", i, ruleDto.getParsingItem());
-                    parsingTargetItem = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
+                    parsingValue = parseParsingItemDepth(ruleDto.getParsingItem(), bodyObj);
 
                 }
                 // Depth 없는 파싱 아이템이 있는 경우 (1)
                 else if( !bodyObj.isNull(ruleDto.getParsingItem()) ){
 
-                    parsingTargetItem = bodyObj.getString(ruleDto.getParsingItem());
+                    parsingValue = bodyObj.getString(ruleDto.getParsingItem());
                     logger.info(">> 34-2. No Depth parsing item : {} : {}", i, ruleDto.getParsingItem());
 
                 }
@@ -156,14 +182,20 @@ public class SequenceRuleExecutor {
                     continue;
                 }
 
-                String topicVal = this.getTypeIdParsingRule(ruleDto, parsingTargetItem);
+                String queueType = this.getTypeIdParsingRule(ruleDto, parsingValue);
 
                 /**
                  * 2. 아이템 값이 null 이거나 없는 경우는 다음 룰로,
                  *  아이템 값이 있는 경우, Position 설정에 따라 파싱 값 가져옴
                  **/
-                if(!SequenceManageUtil.isStringNull(parsingTargetItem)){
-                    return this.getLastValue(parsingTargetItem, topicVal, ruleDto);
+                if(SequenceManageUtil.validString(parsingValue)){
+                    String topicKey = this.generateTopicKey(key, parsingValue, ruleDto.getPosition());
+                    String topicValue = queueType + topicKey;
+                    logger.info("{} Topic value has  been returned. With below info" +
+                            "queueType: {}, topicKey: {}, rule: {}"
+                            , key, queueType, topicKey, ruleDto.toString());
+
+                    return topicValue;
                 }
             }
         }
@@ -177,46 +209,51 @@ public class SequenceRuleExecutor {
 
 
     /**
-     * 획득한 Key를 통해서 분배에 필요한 토픽의 값을 생성
-     * @param parsingTargetItem: 메시지 전문에서 파싱할 대상
-     * @param ruleDto
-     * @return
+     * // TODO Parsing Rule에서 앞에 Type 넣기
+     * 획득한 Parsing Value와 position을 통해서 분배에 필요한 토픽의 값을 생성 (topic key)
+     * @param parsingValue: 전문 내에 Parsing Item으로 설정된 값 (carrId: carrId의 값)
+     * @param position
+     * @return topicKey
      */
-    private String getLastValue(String parsingTargetItem, String topicVal, SequenceRuleDto ruleDto){
+    private String generateTopicKey(String key, String parsingValue, String position){
 
-        logger.info(" >> 35-2. parsing key values : " );
-        topicVal = getTypeIdParsingRule(ruleDto, parsingTargetItem);
-        logger.info("################################# rule : "+ruleDto.toString());
+        logger.info("{} Generate topic key with parsing value : {} with position: {}"
+                ,key, parsingValue, position);
 
-        if(ruleDto.getPosition() == null || ruleDto.getPosition().equals("")){
-            return topicVal.concat(parsePosFromParsingItem(parsingTargetItem,parsingTargetItem.length()-1));
+
+        String topicKey = "";
+        // Position 부재 시, parsing value의 마지막 값
+        if(!SequenceManageUtil.validString(position)){
+            topicKey = parsePositionFromParsingItem(key, parsingValue,parsingValue.length() - 1);
 
         }else {
-            String position = ruleDto.getPosition();
 
             // Case1. 포지션 설정이 한 자리 수 일 때.
             if(position.length() < 2){
 
                 // Case1-1. 포지션이 Key 길이 보다 작을 때 (정상)
-                if(this.validatePositionSize(parsingTargetItem, position)){
-                    return topicVal.concat(parsePosFromParsingItem(parsingTargetItem, Integer.valueOf(position)));
+                if(this.validatePositionSize(parsingValue, position)){
+                    topicKey =  parsePositionFromParsingItem(key,parsingValue, Integer.valueOf(position));
 
                 }
 
                 // Case1-2. 포지션이 Key 길이 보다 클 때 (비 정상)
                 // ex) key: S1012 / key.length: 5, position: 6 인 경우
                 else{
-                    return topicVal.concat(parsePosFromParsingItem(parsingTargetItem, parsingTargetItem.length()-1));
+                    topicKey = parsePositionFromParsingItem(key, parsingValue, parsingValue.length()-1);
 
                 }
-                // Case2. 포지션 설정이 여러 자리 수 일 때.
+            // Case2. 포지션 설정이 여러 자리 수 일 때.
             }else{
 
-                return topicVal.concat(convertEqpIdValue(parsingTargetItem, position));
+                topicKey = convertEqpIdValue(parsingValue, position);
             }
 
         }
 
+        logger.info("{} Topic key has been generated. topicKey: {}",
+                key, topicKey);
+        return topicKey;
     }
 
     /**
@@ -229,6 +266,13 @@ public class SequenceRuleExecutor {
         return (Integer.valueOf(position) ) < key.length();
     }
 
+    /**
+     *
+     * Type에 "/" 추가하는거네
+     * @param ruleDto
+     * @param parsingItem
+     * @return
+     */
     private String getTypeIdParsingRule(SequenceRuleDto ruleDto, String parsingItem ) {
         String type = "";
         String topicVal = null;
@@ -245,9 +289,10 @@ public class SequenceRuleExecutor {
 
         } else {
             // TODO EQP외 대응 (CARR, LOT, CMN)
-            topicVal = parseFromParsingItemName(parsingItem).concat("/");
+            topicVal = getQueueTypeFromParsingItem("key", parsingItem).concat("/");
             logger.info("3. topicVal "+topicVal);
         }
+
         return topicVal;
     }
 
@@ -259,9 +304,79 @@ public class SequenceRuleExecutor {
      */
     public String executeEAPParsingRule(String key, JSONObject payload){
 
-        String topicVal= SeqCommonCode.CMN.name() + "/";
+        String topicType = SeqCommonCode.CMN.name() + "/";
+        String topicValue = "";
         JSONObject bodyObj = payload.getJSONObject(PayloadCommonCode.body.name());
-        return topicVal.concat(bodyObj.getString(SeqCommonCode.eqpId.name()));
+
+        try{
+
+            String eqpId = bodyObj.getString(SeqCommonCode.eqpId.name());
+            if(!(eqpId == null || eqpId.isEmpty())){
+                topicValue = eqpId;
+            }else{
+
+                topicValue = this.getEqpIdFromHead(key, payload);
+
+            }
+
+        }catch (JSONException je){
+
+            topicValue = this.getEqpIdFromHead(key, payload);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+
+        return topicType.concat(topicValue);
+    }
+
+    /**
+     * Find EqpId from head (tgtEqpId) when cannot fine eqpId in body.
+     * @param key
+     * @param payload
+     * @return
+     */
+    private String getEqpIdFromHead(String key, JSONObject payload){
+
+        String tgtEqpId = "";
+        JSONObject headObj = payload.getJSONObject(PayloadCommonCode.head.name());
+        Object tgtEqpObj = headObj.get(PayloadCommonCode.tgtEqp.name());
+        if(tgtEqpObj instanceof JSONArray){
+            JSONArray jsonArray = (JSONArray) tgtEqpObj;
+
+            if(!jsonArray.isEmpty()){
+                tgtEqpId = jsonArray.getString(0);
+            }else{
+
+                logger.error("{} Cannot find eqp Id in paylod both head and body. " +
+                                "bodyEqpId: {}, tgtEqpId: {}, payload: {}",
+                        key, tgtEqpId, tgtEqpId, payload);
+                throw new NullPointerException("No Eqp Id in payload.");
+            }
+
+        }else if(tgtEqpObj instanceof String){
+            tgtEqpId = (String) tgtEqpObj;
+
+        }else{
+            logger.error("{} tgtEqp is not array or String. " +
+                            "bodyEqpId: {}, tgtEqpId: {}, payload: {}",
+                    key, tgtEqpId, tgtEqpId, payload);
+            throw new NullPointerException("No Eqp Id in payload.");
+        }
+
+
+
+        if(!(tgtEqpId == null || tgtEqpId.isEmpty())){
+            return tgtEqpId;
+
+        }else{
+            logger.error("{} Cannot find eqp Id in paylod both head and body. " +
+                            "bodyEqpId: {}, tgtEqpId: {}, payload: {}",
+                    key, tgtEqpId, tgtEqpId, payload);
+            throw new NullPointerException("No Eqp Id in payload.");
+        }
+
     }
 
     @Deprecated
@@ -317,19 +432,24 @@ public class SequenceRuleExecutor {
             return id;
         }
     }
-    /**
-     * position 1자리로 무조건 2자리 파싱해서 return 하기!
-     */
-    private String parsePosFromParsingItem (String key, int position) {
 
-        logger.info("## itemValue "+key);
-        logger.info("## itemValue substring (return) "+key.substring(position-1, position+1));
+
+    /**
+     * Rule에 Position 정보가 없다면, Parsing 대상 값의 마지막 자리를 사용
+     * @param parsingValue
+     * @param position
+     * @return
+     */
+    private String parsePositionFromParsingItem(String key, String parsingValue, int position) {
+
+        logger.info("## itemValue "+parsingValue);
+        logger.info("## itemValue substring (return) "+parsingValue.substring(position-1, position+1));
 
         String originPosValue = "";
         int res = 0;
 
-        logger.info("@@ parsePosFromParsingItem(), position:{} , key.length():{} ", position, key.substring(position-1, position+1));
-        originPosValue = key.substring(position-1, position+1);
+        logger.info("@@ parsePosFromParsingItem(), position:{} , key.length():{} ", position, parsingValue.substring(position-1, position+1));
+        originPosValue = parsingValue.substring(position-1, position+1);
         logger.info("## originPosValue :: "+originPosValue);
         try {
             res = Integer.valueOf(originPosValue) % maxQueueSize;
@@ -342,21 +462,49 @@ public class SequenceRuleExecutor {
     }
 
 
-    private String parseFromParsingItemName(String parsingItem) {
+    /**
+     * Rule에 큐 TYPE이 명시 안될 시, Parsing Item을 통해서 획득
+     *
+     * 큐 타입이 없으면, Parsing Item 앞 4자리를 큐 타입으로 사용
+     * ParsingItem이 CARR 외 3자리면 > CMN으로 처리
+     *  CARR 만 4자리
+     *  Parsing item Slice가 실패하면 CMN 으로 리턴
+     *
+     * @param parsingItem
+     * @return
+     */
+    private String getQueueTypeFromParsingItem(String key, String parsingItem) {
         // 2.3.2 ⑥ Item Name(값이 없으면 ④ Parsing Item 앞4자리를 잘라 대문자 변환
         // CARR외 3자리가 LOT, EQP 가 아니면 CMN으로 처리)
-        String id = null;
-        if ( parsingItem.substring(0).equals("c") ) {
-            id = parsingItem.substring(0, 4).toUpperCase();
-            logger.info("## parseFromParsingItemName() 1. id : "+ id);
-        } else {
-            id = parsingItem.substring(0, 3).toUpperCase();
-            logger.info("## parseFromParsingItemName() 2. id : "+ id);
-            if ( !id.equals(SeqCommonCode.EQP.name()) && !id.equals(SeqCommonCode.LOT.name()) ) id = "CMM";
+        try{
+            String slicedParsingItem = parsingItem.substring(0, 3).toUpperCase();
+            if(slicedParsingItem.equals(SeqCommonCode.LOT.name())){
+                return SeqCommonCode.LOT.name();
+            }else if(slicedParsingItem.equals(SeqCommonCode.EQP.name())){
+                return SeqCommonCode.EQP.name();
+            }else if(slicedParsingItem.concat("R").equals(SeqCommonCode.CARR.name())){
+                return SeqCommonCode.CARR.name();
+            }else{
+                return SeqCommonCode.CMN.name();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("{} Parsing item is not available to be sliced. At least over 3." +
+                            "parsing item: {}, parsing item length: {}" +
+                            "It will return CMN queue type.",
+                    key, parsingItem, parsingItem.length());
+            return SeqCommonCode.CMN.name();
         }
-
-        return id.toUpperCase();
     }
+
+
+    /**
+     * Parsing Item에 Depth가 있는 경우 (carrList/carrId)
+     * body 전문에 등록된 경우를 추적하여 해당 값을 획득
+     * @param parsingItem
+     * @param bodyObj
+     * @return
+     */
     private String parseParsingItemDepth(String parsingItem, JSONObject bodyObj) {
 
         // 파싱 item depth 를 나눔   ex) [0] carridList // [1] carrid

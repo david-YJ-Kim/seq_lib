@@ -172,7 +172,7 @@ public final class SequenceManager {
 
             // what if payload and target is null
             // > then Get target system from event name. and return Common topic
-            if(targetSystem == null || targetSystem.length() == 0){
+            if(!SequenceManageUtil.validString(targetSystem)){
                 targetSystem = SequenceManageUtil.getTargetSystem(eventName);
             }
             logger.warn("{}: {}" +
@@ -185,13 +185,13 @@ public final class SequenceManager {
 
             // if targetSystem is null
             // > then find in payload
-        }else if (targetSystem == null || targetSystem.length() == 0){
+        }else if (!SequenceManageUtil.validString(targetSystem)){
 
             targetSystem = SequenceManageUtil.getTargetNameFromHeader(key, new JSONObject(payload));
 
             // if eventName is null
             // > then find in payload
-        }else if (eventName == null || eventName.length() == 0 ) {
+        }else if (!SequenceManageUtil.validString(eventName)) {
 
             eventName = SequenceManageUtil.getMessageNameFromHeader(key, new JSONObject(payload));
         }
@@ -204,7 +204,7 @@ public final class SequenceManager {
 
 
         /**
-         * B. Verify if the event rule has been registered..
+         * B. Verify if the event rule has been registered.
          */
         // 1. EventRuleChecker
         String checkEventRuleResult = this.checkEventRule(key, targetSystem, eventName, payload);
@@ -222,20 +222,14 @@ public final class SequenceManager {
                     , topicVal, checkEventRuleResult
             );
 
-            /**
-             * C. Basic topic generate rule based on its target system.
-             */
+        /**
+         * C. Basic topic generate rule based on its target system.
+         */
         }else{
-            switch (targetSystem){
-
-                case SystemNameList.EAP:
-                    topicVal = targetSystem + getTopicNameForEAP(key, this.sourceSystem, targetSystem, eventName, payload);
-                    break;
-
-                default:
-                    topicVal = targetSystem + this.getTopicNameForParsingRule(key, targetSystem, eventName, payload);
-                    break;
-
+            if (targetSystem.equals(SystemNameList.EAP)) {
+                topicVal = targetSystem + getTopicNameForEAP(key, payload);
+            } else {
+                topicVal = targetSystem + this.getTopicNameForParsingRule(key, targetSystem, eventName, payload);
             }
         }
 
@@ -253,7 +247,7 @@ public final class SequenceManager {
 
         }catch (NullPointerException e){
             e.printStackTrace();
-            logger.error(e.toString());
+            logger.error("{} Has nullpoin exception :{}", key, e.toString());
             return topicHeader + SequenceManageUtil.getCommonDefaultTopic(key);
         }
 
@@ -276,17 +270,24 @@ public final class SequenceManager {
         SequenceRuleDto sequenceRuleDto = this.eventRuleChecker.getEventRule(targetSystem, eventName);
 
         if(sequenceRuleDto == null){
+            logger.info("{} No event rule has been registered."
+                    , key);
             return null;
 
         }else {
 
-            logger.info("Sequence Rule has been registered. details: {}", sequenceRuleDto.toString());
+            logger.info("{} Event Rule has been registered. details: {}"
+                    , key, sequenceRuleDto);
 
             resultTargetSystem = (targetSystem == null) ? sequenceRuleDto.getTarget() : targetSystem;
-            resultTargetValue = this.ruleExecutor.executeEventRule(resultTargetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+            resultTargetValue = this.ruleExecutor.executeEventRule(key, resultTargetSystem, eventName, new JSONObject(payload), sequenceRuleDto);
+            if(!SequenceManageUtil.validString(resultTargetValue)){
+                return null;
+            }
 
             String returnVal = String.format(ruleResultFormat, resultTargetSystem, resultTargetValue);
-            logger.info("Sequence Rule result: {}", returnVal);
+            logger.info("{} Event Rule result: {}"
+                    , key, returnVal);
             return returnVal;
 
 
@@ -294,7 +295,8 @@ public final class SequenceManager {
 
     }
 
-    private String getTopicNameForEAP(String key, String sourceSystem, String targetSystem, String eventName, String payload) {
+    private String getTopicNameForEAP(String key, String payload) {
+
 
         return "/" + ruleExecutor.executeEAPParsingRule(key, new JSONObject(payload));
 
@@ -307,58 +309,40 @@ public final class SequenceManager {
      * @param payload
      * @return
      */
-    private String getTopicNameForParsingRule(String key, String targetSystem, String eventName, String payload){
+    private String getTopicNameForParsingRule(String key, String targetSystem, String eventName,
+                                              String payload){
 
         String ruleResult = null;
 
         ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
-//        logger.info("{}: {}" +
-//                        "ruleDtoArrayList_size: {}."
-//                ,key ,"Get basic topic generate rule a.k.a parsing rule."
-//                , ruleDtoArrayList.size()
-//        );
 
         /**
-         * A. Undefined System
+         * A. Defined System in config file.
+         * ex) BRS, WFS, RMS, etc...
+         */
+        if(!(ruleDtoArrayList == null || ruleDtoArrayList.isEmpty())){
+            ruleResult = this.ruleExecutor.executeParsingRule(key, targetSystem, eventName,
+                    new JSONObject(payload), ruleDtoArrayList);
+            logger.info("{}: {}" +
+                            "targetSystem: {}, ruleResult: {}."
+                    ,key ,"Topic will be returned according to the parsing rule."
+                    , targetSystem, ruleResult
+            );
+
+        /**
+         * B. Undefined System > It means rule is not registered for this system.
          * ex) SPC, FDC, MCS, OIA, FIS etc...
          */
-        if(ruleDtoArrayList == null || ruleDtoArrayList.size() == 0){
-
-//            String allElementsAsString = ruleDtoArrayList.stream()
-//                    .map(Object::toString) // Assuming SequenceRuleDto has overridden toString() method
-//                    .reduce((result, element) -> result + ", " + element) // Concatenate all elements
-//                    .orElse(""); // Handle the case when the list is empty
-//
-//            logger.warn("{}: {}" +
-//                            "targetSystem: {}, ruleDtoArrayList: {}."
-//                    ,key ,"System is not registered in parsing rule."
-//                    , targetSystem, allElementsAsString
-//            );
+        }else{
 
             ruleResult = SequenceManageUtil.getCommonDefaultTopic(key);
-
-            logger.warn("{}: {}" +
+            logger.info("{}: {}" +
                             "targetSystem: {}, ruleResult: {}."
                     ,key ,"Undefined system will be returned in common topic."
                     , targetSystem, ruleResult
             );
 
-
-            /**
-             * B. Defined System
-             * ex) BRS, WFS, RMS, etc...
-             */
-        }else{
-
-            ruleResult = this.ruleExecutor.executeParsingRule(key, targetSystem, eventName, new JSONObject(payload),
-                    ruleDtoArrayList);
-            logger.info("{}: {}" +
-                            "targetSystem: {}, ruleResult: {}."
-                    ,key ,"Topic will be returned according to parsing rule."
-                    , targetSystem, ruleResult
-            );
         }
-
 
         return "/" + ruleResult;
 
@@ -370,6 +354,11 @@ public final class SequenceManager {
         return watcherThread;
     }
 
+    /**
+     * This method will be called by file watcher thread when the file has been changed.
+     * @param fileName
+     * @param fileContent
+     */
     public void fileChangeDetecting(String fileName, String fileContent){
         logger.info("File change event detected. fileName: {}, fileContent: {}", fileName, fileContent);
 

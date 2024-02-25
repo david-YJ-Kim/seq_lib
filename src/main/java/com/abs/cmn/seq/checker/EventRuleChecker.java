@@ -121,9 +121,6 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
     public SequenceRuleDto getEventRule(String targetSystem, String eventName){
 
         if(!registeredEventName.contains(eventName)){
-            System.out.println(
-                    "Event Name is not registered"
-            );
             return null;
         }else{
 

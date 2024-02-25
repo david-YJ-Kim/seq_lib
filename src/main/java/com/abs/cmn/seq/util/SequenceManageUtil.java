@@ -3,7 +3,6 @@ package com.abs.cmn.seq.util;
 import com.abs.cmn.seq.checker.code.CheckerCommonCode;
 import com.abs.cmn.seq.code.PayloadCommonCode;
 import com.abs.cmn.seq.code.SeqCommonCode;
-import com.abs.cmn.seq.dto.SequenceRuleDto;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +61,8 @@ public class SequenceManageUtil {
         }
     }
 
-    public static boolean isStringNull(String element){
-        return element == null || element.length() == 0 ? true : false;
+    public static boolean validString(String element){
+        return element != null && !element.isEmpty();
     }
 
     public static String getCommonDefaultTopic(String key){
