@@ -304,11 +304,11 @@ public final class SequenceManager {
         String ruleResult = null;
 
         ArrayList<SequenceRuleDto> ruleDtoArrayList = this.parsingRuleChecker.getParsingRule(targetSystem);
-        logger.info("{}: {}" +
-                        "ruleDtoArrayList_size: {}."
-                ,key ,"Get basic topic generate rule a.k.a parsing rule."
-                , ruleDtoArrayList.size()
-        );
+//        logger.info("{}: {}" +
+//                        "ruleDtoArrayList_size: {}."
+//                ,key ,"Get basic topic generate rule a.k.a parsing rule."
+//                , ruleDtoArrayList.size()
+//        );
 
         /**
          * A. Undefined System
@@ -316,16 +316,16 @@ public final class SequenceManager {
          */
         if(ruleDtoArrayList == null || ruleDtoArrayList.size() == 0){
 
-            String allElementsAsString = ruleDtoArrayList.stream()
-                    .map(Object::toString) // Assuming SequenceRuleDto has overridden toString() method
-                    .reduce((result, element) -> result + ", " + element) // Concatenate all elements
-                    .orElse(""); // Handle the case when the list is empty
-
-            logger.warn("{}: {}" +
-                            "targetSystem: {}, ruleDtoArrayList: {}."
-                    ,key ,"System is not registered in parsing rule."
-                    , targetSystem, allElementsAsString
-            );
+//            String allElementsAsString = ruleDtoArrayList.stream()
+//                    .map(Object::toString) // Assuming SequenceRuleDto has overridden toString() method
+//                    .reduce((result, element) -> result + ", " + element) // Concatenate all elements
+//                    .orElse(""); // Handle the case when the list is empty
+//
+//            logger.warn("{}: {}" +
+//                            "targetSystem: {}, ruleDtoArrayList: {}."
+//                    ,key ,"System is not registered in parsing rule."
+//                    , targetSystem, allElementsAsString
+//            );
 
             ruleResult = SequenceManageUtil.getCommonDefaultTopic(key);
 
