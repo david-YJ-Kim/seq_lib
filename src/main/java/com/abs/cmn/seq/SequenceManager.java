@@ -78,8 +78,8 @@ public final class SequenceManager {
 
 
         if(sourceSystem == null || sourceSystem.isEmpty() ||
-            site == null || site.isEmpty() ||
-            env == null || env.isEmpty()
+                site == null || site.isEmpty() ||
+                env == null || env.isEmpty()
         ){
             String format = "Key parameters cannot be null or empty. system: %s, site: %s, env: %s";
             throw new IllegalArgumentException(String.format(format, sourceSystem, site, env));
@@ -222,9 +222,9 @@ public final class SequenceManager {
                     , topicVal, checkEventRuleResult
             );
 
-        /**
-         * C. Basic topic generate rule based on its target system.
-         */
+            /**
+             * C. Basic topic generate rule based on its target system.
+             */
         }else{
             if (targetSystem.equals(SystemNameList.EAP)) {
                 topicVal = targetSystem + getTopicNameForEAP(key, payload);
@@ -329,10 +329,10 @@ public final class SequenceManager {
                     , targetSystem, ruleResult
             );
 
-        /**
-         * B. Undefined System > It means rule is not registered for this system.
-         * ex) SPC, FDC, MCS, OIA, FIS etc...
-         */
+            /**
+             * B. Undefined System > It means rule is not registered for this system.
+             * ex) SPC, FDC, MCS, OIA, FIS etc...
+             */
         }else{
 
             ruleResult = SequenceManageUtil.getCommonDefaultTopic(key);

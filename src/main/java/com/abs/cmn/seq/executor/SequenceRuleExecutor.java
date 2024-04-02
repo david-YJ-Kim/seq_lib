@@ -37,7 +37,7 @@ public class SequenceRuleExecutor {
 
         JSONObject bodyObj = payload.getJSONObject(PayloadCommonCode.body.name());
         logger.debug("{} Execute EventRule. Print all input param " +
-                "targetName : {}, eventName: {}, payload: {}, RuleDto: {} "
+                        "targetName : {}, eventName: {}, payload: {}, RuleDto: {} "
                 ,key, targetName, eventName, payload.toString(), ruleDto.toString());
 
         String queueType = null;
@@ -45,20 +45,20 @@ public class SequenceRuleExecutor {
             queueType = ruleDto.getType();
 
         }else{
-        // type 이 null 이면 parsing item 에서 값을 가져옴
+            // type 이 null 이면 parsing item 에서 값을 가져옴
             queueType = this.getQueueTypeFromParsingItem(key, ruleDto.getParsingItem());
             logger.warn("{} Type is not defined in Rule information. " +
                             "Guessing type : {} from parsing item: {}"
-                        , key, queueType, ruleDto.getParsingItem());
+                    , key, queueType, ruleDto.getParsingItem());
         }
         logger.info("{} Queue type is set up. Currently it will be LOT, EQP, CARR or CMN" +
-                "Type: {}"
+                        "Type: {}"
                 ,key, queueType);
 
 
         String parsingValue = null;
         try{
-        // Parsing Item 에 Depth 있을 경우와 없을 경우, key 값을 가져옴.
+            // Parsing Item 에 Depth 있을 경우와 없을 경우, key 값을 가져옴.
             if(this.isDepthCase(ruleDto.getParsingItem())){
                 logger.info("{} Depth case. " +
                                 " parsing item : {} "
@@ -70,16 +70,16 @@ public class SequenceRuleExecutor {
                     parsingValue = bodyObj.getString(ruleDto.getParsingItem());
                 }else{
                     logger.error("{} Parsing Item is not in payload." +
-                            "parsing Item : {}, payloadBody: {} "
-                    , key, ruleDto.getParsingItem(), bodyObj.toString());
+                                    "parsing Item : {}, payloadBody: {} "
+                            , key, ruleDto.getParsingItem(), bodyObj.toString());
                     return null;
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
             logger.error("{} Error has been occurred while getting Parsing value." +
-                    "parsing item: {}, error:{}"
-            , key, ruleDto.getParsingItem(), e);
+                            "parsing item: {}, error:{}"
+                    , key, ruleDto.getParsingItem(), e);
             throw e;
         }
 
@@ -192,7 +192,7 @@ public class SequenceRuleExecutor {
                     String topicKey = this.generateTopicKey(key, parsingValue, ruleDto.getPosition());
                     String topicValue = queueType + topicKey;
                     logger.info("{} Topic value has  been returned. With below info" +
-                            "queueType: {}, topicKey: {}, rule: {}"
+                                    "queueType: {}, topicKey: {}, rule: {}"
                             , key, queueType, topicKey, ruleDto.toString());
 
                     return topicValue;
@@ -243,7 +243,7 @@ public class SequenceRuleExecutor {
                     topicKey = parsePositionFromParsingItem(key, parsingValue, parsingValue.length()-1);
 
                 }
-            // Case2. 포지션 설정이 여러 자리 수 일 때.
+                // Case2. 포지션 설정이 여러 자리 수 일 때.
             }else{
 
                 topicKey = convertEqpIdValue(parsingValue, position);

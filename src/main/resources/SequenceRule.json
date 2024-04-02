@@ -1,7 +1,9 @@
 {
   "Version": "1.0.0",
   "Description": {
-    "2023-11-27": "Event name rule 추가, WFS_UNLOAD_REQ가 EQP로 줄 서야 한다."
+    "2023-11-27": "Event name rule 추가, WFS_UNLOAD_REQ가 EQP로 줄 서야 한다.",
+    "2024-02-24": "File watch 기능 flag로 설정",
+    "2024-02-26": "null 과 '' 빈값 혼용 사용"
 
   },
   "FileWatchFlag": false,
@@ -11,12 +13,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -48,12 +50,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -67,12 +69,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -104,12 +106,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -123,12 +125,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -160,12 +162,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -179,12 +181,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -216,12 +218,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -235,12 +237,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -272,12 +274,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -291,12 +293,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -328,12 +330,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -384,12 +386,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -403,12 +405,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -440,12 +442,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -459,12 +461,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -496,12 +498,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -515,12 +517,12 @@
       "WFS": [
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -552,12 +554,12 @@
         },
         {
           "parsingItem": "carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
           "parsingItem": "carrList/carrId",
-          "position": null,
+          "position": "",
           "type": "CARR"
         },
         {
@@ -580,7 +582,7 @@
       {
         "eventName": "WFS_INVT_CARR_DATA",
         "parsingItem": "carrIfrmList/carrId",
-        "position": null,
+        "position": "",
         "type": "CARR",
         "target": "WFS"
       }
