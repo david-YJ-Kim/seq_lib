@@ -5,6 +5,7 @@ public final class SystemNameList {
     public static final String WFS = "WFS";
     public static final String BRS = "BRS";
     public static final String EAP = "EAP";
+    public static final String EQP = "EQP";
     public static final String RMS = "RMS";
     public static final String MCS = "MCS";
     public static final String RTD = "RTD";

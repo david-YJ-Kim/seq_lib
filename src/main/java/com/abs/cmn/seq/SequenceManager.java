@@ -161,7 +161,7 @@ public final class SequenceManager {
         String topicName;
         String topicVal = null;
 
-        /**
+        /*
          * A. Validation about each parameter.
          * if something is null, find in given parameter.
          **/
@@ -203,7 +203,7 @@ public final class SequenceManager {
         );
 
 
-        /**
+        /*
          * B. Verify if the event rule has been registered.
          */
         // 1. EventRuleChecker
@@ -222,11 +222,11 @@ public final class SequenceManager {
                     , topicVal, checkEventRuleResult
             );
 
-            /**
+            /*
              * C. Basic topic generate rule based on its target system.
              */
         }else{
-            if (targetSystem.equals(SystemNameList.EAP)) {
+            if (targetSystem.equals(SystemNameList.EAP) || targetSystem.equals(SystemNameList.EQP)) {
                 topicVal = targetSystem + getTopicNameForEAP(key, payload);
             } else {
                 topicVal = targetSystem + this.getTopicNameForParsingRule(key, targetSystem, eventName, payload);
