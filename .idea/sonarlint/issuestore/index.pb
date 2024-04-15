@@ -33,3 +33,5 @@ q
 Asrc/main/java/com/abs/cmn/seq/checker/code/CheckerCommonCode.java,8\2\822d9c072b4265ed324e7e30ace04277f4910cdc
 o
 ?src/main/java/com/abs/cmn/seq/checker/util/RuleCheckerUtil.java,0\0\00f85c794d354f82f23f0cb359f82d0bb0731499
+f
+6src/test/java/com/abs/cmn/seq/wfs/WfsSequenceTest.java,0\d\0d8ee5909552622f5cfe79da1d313d2a17537646

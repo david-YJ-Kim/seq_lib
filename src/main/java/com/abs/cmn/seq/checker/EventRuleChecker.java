@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<String, SequenceRuleDto>> {
 
-	private static final Logger logger = LoggerFactory.getLogger(EventRuleChecker.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventRuleChecker.class);
 
     private String filePath;
     private String fileName;
@@ -75,7 +75,7 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
         }catch (Exception e){
             e.printStackTrace();
             logger.error("Error while back-up current data." +
-                    " currentRuleObjectData :{}, ruleSequenceList:{}, historyMap:{}",
+                            " currentRuleObjectData :{}, ruleSequenceList:{}, historyMap:{}",
                     this.currentRuleObject, this.ruleHistoryKeySequenceList.toString(), ruleDataHistoryMap.toString());
             return false;
 
@@ -91,7 +91,7 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
         // Back up temporary rule obj for in case.
         JSONObject tmpCurrentRuleObj = this.currentRuleObject;
         String ruleKey = SequenceManageUtil.generateErcKey();
-        
+
         try{
 
             // 실제 Map Update 하는 로직
@@ -121,9 +121,6 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
     public SequenceRuleDto getEventRule(String targetSystem, String eventName){
 
         if(!registeredEventName.contains(eventName)){
-            System.out.println(
-                    "Event Name is not registered"
-            );
             return null;
         }else{
 
@@ -131,7 +128,7 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
                 logger.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
                 return null;
             }else {
-            	if(this.ruleDataMap.get(targetSystem) == null){
+                if(this.ruleDataMap.get(targetSystem) == null){
                     logger.warn("Event Name is registered but not for that target.  CID: {}, EventName: {}", eventName, targetSystem);
                     return null;
                 }else {

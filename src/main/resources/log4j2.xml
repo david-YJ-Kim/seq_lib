@@ -1,42 +1,42 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
-  <Appenders>
-    <RollingFile name="LogApp" fileName="../logs/seq/cmn-seq.log" filePattern="../logs/seq/cmn-seq-%d{yyyy-MM-dd_HH}_%i.log" immediateFlush="true" append="true">
-        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
+    <Appenders>
+        <RollingFile name="LogApp" fileName="../logs/seq/cmn-seq.log" filePattern="../logs/seq/cmn-seq-%d{yyyy-MM-dd_HH}_%i.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
 
-        <Policies>
-            <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
-            <SizeBasedTriggeringPolicy size="4 MB"/>
-        </Policies>
-        <DefaultRolloverStrategy max="500"/>
-    </RollingFile>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="4 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="500"/>
+        </RollingFile>
 
-    <RollingFile name="LogException" fileName="../logs/error/seq/cmn-seq_error.log" filePattern="../logs/error/seq/cmn-seq_error-%d{yyyy-MM-dd_HH}_%i.log" immediateFlush="true" append="true">
-        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
+        <RollingFile name="LogException" fileName="../logs/error/seq/cmn-seq_error.log" filePattern="../logs/error/seq/cmn-seq_error-%d{yyyy-MM-dd_HH}_%i.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
 
-        <Policies>
-            <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
-            <SizeBasedTriggeringPolicy size="4 MB"/>
-        </Policies>
-        <DefaultRolloverStrategy max="500"/>
-    </RollingFile>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="6" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="4 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="500"/>
+        </RollingFile>
 
-    <Console name="LogToConsole" target="SYSTEM_OUT">
-        <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
-    </Console>
-  </Appenders>
-  
-  <Loggers>
-    <Logger name="com.abs.cmn.seq" additivity="false">
-        <AppenderRef ref="LogApp" level="info" />
-        <AppenderRef ref="LogToConsole" level="info" />
-        <AppenderRef ref="LogException" level="error"/>
-    </Logger>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative] %-5level [%thread] %logger.%M(:%L) - %msg%n"/>
+        </Console>
+    </Appenders>
 
-    <Root level="info">
-        <AppenderRef ref="LogApp"/>
-        <AppenderRef ref="LogToConsole"/>
-        <AppenderRef ref="LogException" level="error"/>
-    </Root>
-  </Loggers>
+    <Loggers>
+        <Logger name="com.abs.cmn.seq" additivity="false">
+            <AppenderRef ref="LogApp" level="info" />
+            <AppenderRef ref="LogToConsole" level="info" />
+            <AppenderRef ref="LogException" level="error"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="LogApp"/>
+            <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="LogException" level="error"/>
+        </Root>
+    </Loggers>
 </Configuration>

@@ -5,19 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="SEQ Library 초기화 설정">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/version.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/seq-library.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/seq-library.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SeqCommonCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SeqCommonCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/EventRuleChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/EventRuleChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/ParsingRuleChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/ParsingRuleChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/RuleCheckerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/RuleCheckerInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/PayloadCommonCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/PayloadCommonCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/dto/SequenceRuleDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/dto/SequenceRuleDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/executor/SequenceRuleExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/executor/SequenceRuleExecutor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/SequenceRule.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/SequenceRule.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j2.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/TEST_CODE.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/TEST_CODE.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/SequenceRule.json" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SequenceRule.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +87,7 @@
       <command value="mvn clean install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.SequenceManagerTest">
+  <component name="RunManager" selected="JUnit.WfsSequenceTest.testAddition">
     <configuration name="MavenVersionPrinter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.abs.cmn.seq.util.MavenVersionPrinter" />
       <module name="seq-library" />
@@ -135,26 +140,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="com.abs.common.seq.SequenceManager" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.abs.common.seq.SequenceManager" />
+    <configuration name="WfsSequenceTest.testAddition" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="seq-library" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.abs.common.seq.*" />
+          <option name="PATTERN" value="com.abs.cmn.seq.wfs.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="com.abs.cmn.seq.wfs" />
+      <option name="MAIN_CLASS_NAME" value="com.abs.cmn.seq.wfs.WfsSequenceTest" />
+      <option name="METHOD_NAME" value="testAddition" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.WfsSequenceTest.testAddition" />
         <item itemvalue="Application.SequenceManagerTest" />
         <item itemvalue="Application.MavenVersionPrinter" />
         <item itemvalue="Application.ParsingRuleChecker" />
         <item itemvalue="Application.SequenceRuleExecutor" />
-        <item itemvalue="Application.com.abs.common.seq.SequenceManager" />
       </list>
     </recent_temporary>
   </component>
@@ -184,6 +192,9 @@
       <workItem from="1707918099745" duration="2895000" />
       <workItem from="1708544178993" duration="604000" />
       <workItem from="1708568523780" duration="4645000" />
+      <workItem from="1708954375087" duration="5109000" />
+      <workItem from="1711041887864" duration="37000" />
+      <workItem from="1712087102905" duration="1305000" />
     </task>
     <task id="LOCAL-00001" summary="Initialize Project">
       <created>1693825870874</created>
@@ -218,6 +229,11 @@
         <entry key="MAIN">
           <value>
             <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
               <option name="FILTERS">
                 <map>
                   <entry key="branch">

@@ -139,7 +139,7 @@ public class ParsingRuleChecker implements RuleCheckerInterface<ArrayList<Sequen
     public ArrayList<SequenceRuleDto> getParsingRule(String targetSystem){
 
         return ruleDataMap.get(targetSystem);
-   }
+    }
 
 
     /**

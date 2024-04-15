@@ -12,5 +12,5 @@ public interface RuleCheckerInterface<T> {
     boolean sequenceDataReload(JSONObject ruleObject);
 
     // JDK8 Private 으로 interface 선언 못함...
-     // private void generateRuleDataMap(ConcurrentHashMap<String, T> dataMap, JSONObject ruleObj );
+    // private void generateRuleDataMap(ConcurrentHashMap<String, T> dataMap, JSONObject ruleObj );
 }

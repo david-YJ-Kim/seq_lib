@@ -15,7 +15,7 @@ public class SequenceRuleDto {
     private String target;
     private String modifiedTarget;
 
-    
+
     public SequenceRuleDto() {
     }
 
@@ -25,19 +25,19 @@ public class SequenceRuleDto {
 
     public SequenceRuleDto(JSONObject jsonObject){
         this(
-            jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
-            (String) jsonObject.get(SeqCommonCode.parsingItem.name()),                
-            jsonObject.isNull(SeqCommonCode.position.name()) ? null : String.valueOf(jsonObject.get(SeqCommonCode.position.name())),                
-            jsonObject.isNull(SeqCommonCode.type.name())? null: String.valueOf( jsonObject.get(SeqCommonCode.type.name())),
-            jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name()),
-    		jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
-                		
-        );
- 
-    }
-     
+                jsonObject.isNull(SeqCommonCode.eventName.name()) ? null : (String) jsonObject.get(SeqCommonCode.eventName.name()),
+                (String) jsonObject.get(SeqCommonCode.parsingItem.name()),
+                jsonObject.isNull(SeqCommonCode.position.name()) ? null : String.valueOf(jsonObject.get(SeqCommonCode.position.name())),
+                jsonObject.isNull(SeqCommonCode.type.name())? null: String.valueOf( jsonObject.get(SeqCommonCode.type.name())),
+                jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name()),
+                jsonObject.isNull(SeqCommonCode.target.name()) ? null : (String) jsonObject.get(SeqCommonCode.target.name())
 
-    
+        );
+
+    }
+
+
+
 
     public SequenceRuleDto(String eventName, String parsingItem, String position, String type, String target, String modifiedTarget) {
         this.eventName = eventName;
@@ -93,15 +93,15 @@ public class SequenceRuleDto {
     }
 
 
-	public String getModifiedTarget() {
-		return modifiedTarget;
-	}
+    public String getModifiedTarget() {
+        return modifiedTarget;
+    }
 
-	public void setModifiedTarget(String modifiedTarget) {
-		this.modifiedTarget = modifiedTarget;
-	}
+    public void setModifiedTarget(String modifiedTarget) {
+        this.modifiedTarget = modifiedTarget;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return "EventRuleDto{" +
                 "eventName='" + eventName + '\'' +
