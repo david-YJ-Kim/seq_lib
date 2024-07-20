@@ -141,12 +141,15 @@ public class EventRuleChecker implements RuleCheckerInterface<ConcurrentHashMap<
 
     private void generateRuleDataMap(ConcurrentHashMap<String, ConcurrentHashMap<String, SequenceRuleDto>> dataMap, JSONObject ruleObj){
 
-        for (String key: ruleObj.keySet()){
-            ConcurrentHashMap<String, SequenceRuleDto> value = this.setEventRuleArray(ruleObj.getJSONArray(key));
+        Iterator<String> keys = ruleObj.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JSONArray jsonArray = ruleObj.getJSONArray(key);
+            ConcurrentHashMap<String, SequenceRuleDto> value = this.setEventRuleArray(jsonArray);
             dataMap.put(key, value);
             logger.info("Sequence rule data generate map with key: {}, value: {}", key, value.toString());
         }
-        logger.info("Rule data map has been generated. rulObject: {}. data map: {}",
+        logger.info("Rule data map has been generated. ruleObject: {}. data map: {}",
                 ruleObj.toString(), dataMap.toString());
 
     }
