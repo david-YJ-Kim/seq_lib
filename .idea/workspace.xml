@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="parsePositionFromParsingItem String Index 에러 수정.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/version.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/version.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,20 +21,25 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="upstream" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "david-YJ-Kim"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;david-YJ-Kim&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/david-YJ-Kim/seq_lib.git",
-    "accountId": "23c60c10-cae0-4a4b-b328-e6312de9eaff"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/david-YJ-Kim/seq_lib.git&quot;,
+    &quot;accountId&quot;: &quot;23c60c10-cae0-4a4b-b328-e6312de9eaff&quot;
   }
-}]]></component>
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -51,6 +54,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.SequenceManagerTest.executor": "Run",
+    "Maven.seqLibrary [clean,install...].executor": "Run",
     "Maven.seqLibrary [clean].executor": "Run",
     "Maven.seqLibrary [install].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -59,7 +63,7 @@
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "WebServerToolWindowFactoryState": "false",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "upstream",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Workspace/Common/seq",
     "node.js.detected.package.eslint": "true",
@@ -82,6 +86,7 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="mvn clean install" />
+      <command value="mvn clean install -Dmaven.test.skip=true" />
     </option>
   </component>
   <component name="RunManager" selected="Application.SequenceManagerTest">
@@ -240,6 +245,11 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="fbb9407d-b87a-4102-a4f4-16ce413d4222" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
@@ -262,6 +272,11 @@
                 </map>
               </option>
             </State>
+          </value>
+        </entry>
+        <entry key="fbb9407d-b87a-4102-a4f4-16ce413d4222">
+          <value>
+            <State />
           </value>
         </entry>
       </map>
