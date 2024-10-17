@@ -442,17 +442,12 @@ public class SequenceRuleExecutor {
      */
     private String parsePositionFromParsingItem(String key, String parsingValue, int position) {
 
-        logger.info("## itemValue "+parsingValue);
-        logger.info("## itemValue substring (return) "+parsingValue.substring(position-1, position+1));
+        logger.info("Print parameter. key: {}, parsingValue: {}, position: {}", key, parsingValue, position);
 
-        String originPosValue = "";
         int res = 0;
 
-        logger.info("@@ parsePosFromParsingItem(), position:{} , key.length():{} ", position, parsingValue.substring(position-1, position+1));
-        originPosValue = parsingValue.substring(position-1, position+1);
-        logger.info("## originPosValue :: "+originPosValue);
         try {
-            res = Integer.valueOf(originPosValue) % maxQueueSize;
+            res = Integer.valueOf(parsingValue.substring(position-1, position+1)) % maxQueueSize;
         } catch (Exception e) {
             res = 0;
         }

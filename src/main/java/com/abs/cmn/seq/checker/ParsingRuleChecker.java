@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ParsingRuleChecker implements RuleCheckerInterface<ArrayList<SequenceRuleDto>>{
@@ -121,9 +122,13 @@ public class ParsingRuleChecker implements RuleCheckerInterface<ArrayList<Sequen
     }
 
     private void generateRuleDataMap(ConcurrentHashMap<String, ArrayList<SequenceRuleDto>> dataMap, JSONObject ruleObject){
+
         JSONObject object = ruleObject.getJSONObject(this.sourceSystem);
-        for(String key: object.keySet()){
-            dataMap.put(key, this.setParsingSequenceArray(object.getJSONArray(key)));
+        Iterator<String> keys = object.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            JSONArray jsonArray = object.getJSONArray(key);
+            dataMap.put(key, this.setParsingSequenceArray(jsonArray));
         }
     }
 
