@@ -4,9 +4,14 @@
     "v1.0.0": {
       "comment": "Release for production env.",
       "date": "2024-02-22"
-    },"v1.0.1": {
+    },
+    "v1.0.1": {
       "comment": "Develop for EQP Queue, directly connect with Equipment.",
       "date": "2024-04-03"
+    },
+    "v1.0.3": {
+      "comment": "parsePositionFromParsingItem String Index 에러 수정.",
+      "date": "2024-10-17"
     }
   }
 }
