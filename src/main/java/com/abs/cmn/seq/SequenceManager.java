@@ -157,8 +157,41 @@ public final class SequenceManager {
                 , targetSystem, eventName, payload
         );
 
-        // topic Header = SVM/DEV/
-        String topicName;
+        // topic 생성 중에 발생하는 에러는 Common 토픽으로 반환
+        String topicVal = null;
+        try{
+            topicVal = this.executeTopicNameRule(key, targetSystem, eventName, payload);
+        }catch (Exception e){
+            logger.error("{} Has Exception :{}", key, e.toString());
+            return topicHeader + SequenceManageUtil.getCommonDefaultTopic(key, targetSystem);
+
+        }
+
+        try{
+            Objects.requireNonNull(topicVal);
+            return topicHeader.concat(topicVal);
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            logger.error("{} Has nullpoin exception :{}", key, e.toString());
+            return topicHeader + SequenceManageUtil.getCommonDefaultTopic(key, targetSystem);
+        }
+
+
+    }
+
+
+    /**
+     * getTargetName 메소드 호출하는 서브 룰
+     * @param key
+     * @param targetSystem
+     * @param eventName
+     * @param payload
+     * @return
+     */
+    private String executeTopicNameRule(String key, String targetSystem, String eventName, String payload){
+
+
         String topicVal = null;
 
         /*
@@ -180,7 +213,7 @@ public final class SequenceManager {
                     , key ,"Mandatory parameter is null. so return common topic. please fill out all the parameters."
                     , targetSystem, eventName, payload
             );
-            return this.topicHeader + targetSystem + SequenceManageUtil.getCommonDefaultTopic(key); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
+            return this.topicHeader + SequenceManageUtil.getCommonDefaultTopic(key, targetSystem); //+ CMN 맞춰서 잘못 된 Topic 으로 Return
 
 
             // if targetSystem is null
@@ -233,24 +266,14 @@ public final class SequenceManager {
             }
         }
 
-        topicName = topicHeader.concat(topicVal);
-        logger.info("{}: {}" +
-                        "topicName: {}, topicHeader: {}, topicVal: {}, targetSystem: {}."
-                ,key ,"Result of basic topic generating rule."
-                , topicName, topicHeader, topicVal, targetSystem
-        );
+        return topicVal;
 
-
-        try{
-            Objects.requireNonNull(topicVal);
-            return topicName;
-
-        }catch (NullPointerException e){
-            e.printStackTrace();
-            logger.error("{} Has nullpoin exception :{}", key, e.toString());
-            return topicHeader + SequenceManageUtil.getCommonDefaultTopic(key);
-        }
-
+//        topicName = topicHeader.concat(topicVal);
+//        logger.info("{}: {}" +
+//                        "topicName: {}, topicHeader: {}, topicVal: {}, targetSystem: {}."
+//                ,key ,"Result of basic topic generating rule."
+//                , topicName, topicHeader, topicVal, targetSystem
+//        );
 
     }
 
@@ -335,7 +358,7 @@ public final class SequenceManager {
              */
         }else{
 
-            ruleResult = SequenceManageUtil.getCommonDefaultTopic(key);
+            ruleResult = SequenceManageUtil.getCommonDefaultTopic(key, targetSystem);
             logger.info("{}: {}" +
                             "targetSystem: {}, ruleResult: {}."
                     ,key ,"Undefined system will be returned in common topic."

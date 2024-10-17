@@ -65,17 +65,30 @@ public class SequenceManagerTest {
 //        String sequenceRuleFileName = "SequenceRule.json";
 //        String sequenceRuleFileTestName = "SequenceMessageRuleTest_BakUp.json";
 //
-        String testMsg = "{\"head\":{\"cid\":\"BRS_ALARM_EXECUTE\",\"tid\":\"SPC_20241015090731_ed89123c-a3cf-4998-9de9-24b3a5a91951\",\"src\":\"SPC\",\"tgt\":\"BRS\",\"osrc\":\"\",\"otgt\":\"\",\"srcEqp\":\"\",\"tgtEqp\":[\"\"]},\"body\":{\"alarmCm\":\" Upper Spec Limit 400.0 OUT\",\"alarmDefId\":\"AS-T0001\",\"carrId\":\"\",\"eqpId\":\"AP-TG-08-01\",\"lotId\":\"1\",\"mtrlId\":\"1\",\"siteId\":\"SVM\",\"rsnCd\":\"\",\"trnsCm\":\"\",\"mdfyUserId\":\"SPC\"}}";
+        String testMsg = "{\n" +
+                "  \"head\" : {\n" +
+                "    \"tgt\" : \"WFS\",\n" +
+                "    \"cid\" : \"WFS_INVT_CARR_DATA\",\n" +
+                "    \"tid\" : \"171155369866095036\",\n" +
+                "    \"osrc\" : \"MCS\",\n" +
+                "    \"otgt\" : \"WFS\",\n" +
+                "    \"src\" : \"MCS\"\n" +
+                "  },\n" +
+                "  \"body\" : {\n" +
+                "    \"eqpId\" : \"ACON01\",\n" +
+                "    \"carrIfrmList\" : [ ]\n" +
+                "  }\n" +
+                "}";
 //
 ////        JSONObject testObj = new JSONObject(SequenceManageUtil.readFile(ruleFilesPath.concat(sequenceRuleFileTestName)));
 //        JSONObject testObj = new JSONObject(testMsg);
 
 
-        SequenceManager sequenceManager = new SequenceManager("SPC", "SVM", "PROD", "C:\\Workspace\\Common\\seq\\src\\main\\resources\\", "SequenceRule.json");
+        SequenceManager sequenceManager = new SequenceManager("MCS", "SVM", "PROD", "C:\\Workspace\\Common\\seq\\src\\main\\resources\\", "SequenceRule.json");
         JSONObject test;
         String topicResult;
 
-        System.out.println(sequenceManager.getTargetName("BRS","BRS_ALARM_EXECUTE", testMsg));
+        System.out.println(sequenceManager.getTargetName("WFS","WFS_INVT_CARR_DATA", testMsg));
 
 //        List<Map<String,String>> testResult = new ArrayList<Map<String, String>>();
 //        Map<String,String> testCase = new HashMap();

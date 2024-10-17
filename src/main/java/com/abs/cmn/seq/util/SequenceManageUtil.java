@@ -65,12 +65,13 @@ public class SequenceManageUtil {
         return element != null && !element.isEmpty();
     }
 
-    public static String getCommonDefaultTopic(String key){
-        logger.info("{}: {}"
+    public static String getCommonDefaultTopic(String key, String targetSystem){
+        logger.info("{}: {}, targetSystem: {}"
                 ,key
                 ,"This event has benn return in common topic value."
+                , targetSystem
         );
-        return SequenceManageUtil.getCommonTopic("00");
+        return targetSystem + "/" + SequenceManageUtil.getCommonTopic("00");
     }
     public static String getCommonTopic(String seq){
         return SeqCommonCode.CMN.name() + "/" + seq;

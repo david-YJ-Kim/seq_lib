@@ -4,34 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="SEQ Library 초기화 설정">
+    <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="parsePositionFromParsingItem String Index 에러 수정.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/EventRuleChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/EventRuleChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/ParsingRuleChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/ParsingRuleChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/RuleCheckerInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/RuleCheckerInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/code/CheckerCommonCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/code/CheckerCommonCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/util/RuleCheckerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/checker/util/RuleCheckerUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/PayloadCommonCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/PayloadCommonCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SeqCommonCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SeqCommonCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SystemNameList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/code/SystemNameList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/dto/SequenceRuleDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/dto/SequenceRuleDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/executor/SequenceRuleExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/executor/SequenceRuleExecutor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/file/RuleFileWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/file/RuleFileWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest_BakUp.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/SequenceMessageRuleTest_BakUp.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/SequenceRule.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/SequenceRule.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/TestConfiguration.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/TestConfiguration.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/version.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/version.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/TEST_CODE.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/TEST_CODE.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/util/SeqTestUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/util/SeqTestUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/util/code/SeqTestConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/util/code/SeqTestConstant.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/wfs/WfsSequenceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/wfs/WfsSequenceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/SequenceRule.json" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SequenceRule.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "david-YJ-Kim"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/david-YJ-Kim/seq_lib.git",
+    "accountId": "23c60c10-cae0-4a4b-b328-e6312de9eaff"
+  }
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -214,7 +203,7 @@
       <workItem from="1712087102905" duration="1305000" />
       <workItem from="1728348251929" duration="46000" />
       <workItem from="1729114217450" duration="1291000" />
-      <workItem from="1729170766166" duration="2137000" />
+      <workItem from="1729170766166" duration="3562000" />
     </task>
     <task id="LOCAL-00001" summary="Initialize Project">
       <created>1693825870874</created>
@@ -237,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1695102909008</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="parsePositionFromParsingItem String Index 에러 수정.">
+      <option name="closed" value="true" />
+      <created>1729174587533</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1729174587533</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,7 +271,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initialize Project" />
     <MESSAGE value="SEQ Library 초기화 설정" />
-    <option name="LAST_COMMIT_MESSAGE" value="SEQ Library 초기화 설정" />
+    <MESSAGE value="parsePositionFromParsingItem String Index 에러 수정." />
+    <option name="LAST_COMMIT_MESSAGE" value="parsePositionFromParsingItem String Index 에러 수정." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -299,7 +297,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java</url>
-          <line>323</line>
+          <line>346</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
