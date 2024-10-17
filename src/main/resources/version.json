@@ -9,7 +9,11 @@
       "comment": "Develop for EQP Queue, directly connect with Equipment.",
       "date": "2024-04-03"
     },
-    "v1.0.3": {
+    "v1.0.4": {
+      "comment": "parsePositionFromParsingItem String Index 에러 수정.",
+      "date": "2024-10-17"
+    },
+    "v1.0.5": {
       "comment": "parsePositionFromParsingItem String Index 에러 수정.",
       "date": "2024-10-17"
     }

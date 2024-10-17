@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="4cc54c25-7f32-46a6-a74f-691126165fc3" name="Changes" comment="parsePositionFromParsingItem String Index 에러 수정.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/SequenceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/abs/cmn/seq/util/SequenceManageUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/abs/cmn/seq/SequenceManagerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/version.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/version.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +59,7 @@
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "WebServerToolWindowFactoryState": "false",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "upstream",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Workspace/Common/seq",
     "node.js.detected.package.eslint": "true",
@@ -203,7 +202,7 @@
       <workItem from="1712087102905" duration="1305000" />
       <workItem from="1728348251929" duration="46000" />
       <workItem from="1729114217450" duration="1291000" />
-      <workItem from="1729170766166" duration="3562000" />
+      <workItem from="1729170766166" duration="5464000" />
     </task>
     <task id="LOCAL-00001" summary="Initialize Project">
       <created>1693825870874</created>
